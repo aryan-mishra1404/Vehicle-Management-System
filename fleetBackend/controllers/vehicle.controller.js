@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Vehicle from "../models/Vehicle.js"; // Ensure the correct path to your Vehicle model
+import Vehicle from "../models/Vehicle.js";
 
 // Get all vehicles
 const getAllVehicles = async (req, res) => {

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const documentSchema = new mongoose.Schema(
   {
-    type: {
+    name: {
       type: String,
       required: true,
     },
@@ -12,17 +12,19 @@ const documentSchema = new mongoose.Schema(
     },
     expiryDate: {
       type: String,
-      //   required: true,
     },
-    amount: {
+    amountPaid: {
       type: String,
     },
     lastIssueDate: {
       type: String,
     },
-    actions: {
+    file: {
       type: String,
-      required: true,
+      default: "",
+    },
+    issueCompany: {
+      type: String,
     },
   },
   { timestamps: true }

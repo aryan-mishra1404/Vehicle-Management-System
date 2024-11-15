@@ -2,17 +2,17 @@ import express from "express"; // ES6 import
 import mongoose from "mongoose"; // ES6 import
 import vehicleRoutes from "./routes/vehicle.js"; // Import routes
 import associateRoutes from "./routes/associates.js";
-
+import documentRoutes from "./routes/document.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Middleware to parse URL-encoded data (for form submissions)
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/vehicle", vehicleRoutes);
 app.use("/api/v1/associate", associateRoutes);
+app.use("/api/v1/document/", documentRoutes);
 
 // Mongoose Connection
 mongoose
