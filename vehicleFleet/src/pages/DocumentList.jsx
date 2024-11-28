@@ -171,7 +171,6 @@ const DocumentList = () => {
                     onClose={() => setIsAddModalOpen(!isAddModalOpen)}
                     vehicle={documentStructure}
                     onSave={handleSaveDocument}
-
                 />
             )}
 

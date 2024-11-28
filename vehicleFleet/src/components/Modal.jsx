@@ -27,14 +27,16 @@ const Modal = ({ isOpen, modalTitle, onClose, vehicle, onSave }) => {
         <Dialog open={isOpen} onClose={onClose}>
             <DialogTitle>{modalTitle}</DialogTitle>
             <DialogContent>
-                {Object.entries(editedVehicle).map(([key, value]) => (
+                {Object.entries(editedVehicle)?.map(([key, value]) => (
                     <TextField
                         key={key}
+                        className='h-fit'
                         margin="dense"
                         name={key}
                         label={key.charAt(0).toUpperCase() + key.slice(1)}
                         type={key === 'date' ? 'date' : 'text'}
                         fullWidth
+
                         value={value}
                         onChange={handleInputChange}
                         InputLabelProps={key === 'date' ? { shrink: true } : undefined}
