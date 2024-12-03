@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import ModalComponent from '../components/Modal';
 import Calendar from './Calendar';
 
+import * as XLSX from 'xlsx'; // Import xlsx library
+
 const initialVehicleData = [
     { id: 1, date: '2024-11-15', vehicleNumber: 'MH12AB1234', weight: 1500, rate: 120, source: 'Chennai', destination: 'Coimbatore', income: 180000 },
     { id: 2, date: '2024-11-16', vehicleNumber: 'UP01RS4321', weight: 1800, rate: 50, source: 'Delhi', destination: 'Noida', income: 90000 },
@@ -26,7 +28,7 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
     const [vehicleData, setVehicleData] = useState(initialVehicleData);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedVehicle, setSelectedVehicle] = useState('');
-    const [selectedDate, setSelectedDate] = useState('h');
+    const [selectedDate, setSelectedDate] = useState('');
 
     const [selectedSource, setSelectedSource] = useState('');
     const [selectedDestination, setSelectedDestination] = useState('');
@@ -50,7 +52,7 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
         const incomeSum = filteredData.reduce((sum, row) => sum + row.weight * row.rate, 0);
         setTotalIncome(incomeSum);
         setTotalRounds(filteredData.length)
-    }, [filteredData]);
+    }, [filteredData, setTotalIncome, setTotalRounds]);
 
 
     useEffect(() => {
@@ -76,11 +78,12 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
 
         const firstVehicle = vehicleData?.[0];
         if (firstVehicle) {
-            const emptyVehicle = Object.keys(firstVehicle).reduce((acc, key) => {
+            const { income, id, ...incomeStructure } = firstVehicle;
+            const emptyIncomeStructure = Object.keys(incomeStructure).reduce((acc, key) => {
                 acc[key] = '';
                 return acc;
             }, {});
-            setTableStructure(emptyVehicle);
+            setTableStructure(emptyIncomeStructure);
         }
         setFilteredData(filteredData);
     }, [vehicleData, selectedVehicle, selectedDate, selectedSource, selectedDestination, dateState]);
@@ -94,7 +97,9 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
     };
 
     const handleEdit = (row) => {
-        setSelectedRow(row);
+        console.log(row, "selected Row");
+        // const { id, income, ...updatedVehicleRow } = row; // Exclude `id` and `income`
+        setSelectedRow(row); // Set the remaining properties
         setIsModalOpen(true);
     };
     const handleCloseModal = () => {
@@ -114,8 +119,9 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
     };
 
     const handleUpdateDocument = (editedData) => {
+        const updatedData = { ...editedData, income: editedData.weight * editedData.rate, }
         setVehicleData((prevVehicleData) =>
-            prevVehicleData.map((v) => (v.id === editedData.id ? editedData : v))
+            prevVehicleData.map((v) => (v.id === updatedData.id ? updatedData : v))
         );
     };
 
@@ -125,9 +131,16 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
         setVehicleData(updatedData);
     }
     const handleSaveDocument = (newData) => {
-        const newDocument = { ...newData, id: vehicleData.length + 1 }; // Add a unique id
-        setVehicleData((prevVehicleData) => [...prevVehicleData, newDocument]);
+        console.log(newData);
+        const processedData = {
+            ...newData,
+            id: vehicleData.length + 1,               // Assign a unique id
+            income: newData.weight * newData.rate,    // Calculate income dynamically
+        };
+        console.log(processedData, "processed data");
+        setVehicleData((prevVehicleData) => [...prevVehicleData, processedData]);
     };
+
 
     const columns = [
         { field: 'id', headerName: 'Sno.', flex: 0.5 },
@@ -174,6 +187,7 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                             ₹{totalIncome}
                         </span> </h3>
 
+
                     </div>
                 )
             }
@@ -204,8 +218,8 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                     <Button
                         variant="contained"
                         onClick={() => setIsAddModalOpen(true)}
-                        startIcon={<AddIcon />}
-                        sx={{ height: '100%' }}
+                        startIcon={<AddIcon className='w-[5vmax] h-[5vmax]' />}
+                        sx={{ height: '100%', fontSize: ".9vmax" }}
                     >
                         Add data
                     </Button>
@@ -260,14 +274,49 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                         checkboxSelection
                         disableSelectionOnClick
                         sx={{
+                            fontSize: '.9vmax !important',
                             '& .MuiDataGrid-root': {
-                                border: 0, // Removes unnecessary borders for a cleaner look
+                                border: 0, // Removes the outer border
+                                fontSize: "0.9vmax ", // Scales font size for responsiveness
+                                fontFamily: "Inter, sans-serif", // Consistent font family
                             },
-                            '& .MuiDataGrid-columnHeader': {
-                                backgroundColor: '#f5f5f5', // Optional: Add header background styling
+                            '& .MuiDataGrid-columnHeaders': {
+                                backgroundColor: '#f5f5f5', // Light gray header background
+                                color: '#333', // Dark text for better readability
+                                fontSize: "1vmax",
+                                fontWeight: 'bold', // Makes headers stand out
+                                borderBottom: '1px solid #ddd', // 
+
+
+                            },
+                            '& .MuiDataGrid-columnSeparator': {
+                                display: 'none', // Removes separators between column headers
+                            },
+                            '& .MuiDataGrid-row': {
+                                '&:hover': {
+                                    backgroundColor: '#fafafa', // Subtle row hover effect
+                                },
+                            },
+                            '& .MuiDataGrid-cell': {
+                                borderBottom: '1px solid #eee', // Light bottom border for rows
+
+                                padding: '0 .5vmax', // Adds cell padding
+                            },
+                            '& .MuiDataGrid-footerContainer': {
+                                backgroundColor: '#f9f9f9', // Footer background
+                                borderTop: '1px solid #ddd', // Top border for separation
+                            },
+                            '& .MuiCheckbox-root': {
+                                color: '#333', // Checkbox color
+                                width: "1vmax",
+                                height: "1vmax"
+                            },
+                            '& .MuiDataGrid-toolbarContainer': {
+                                padding: '0.5vmax', // Toolbar padding
                             },
                         }}
                     />
+
                 </Box>
             </div>
 
@@ -277,6 +326,7 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
                     vehicle={selectedRow}
+                    vehicles={['MH12AB1234', 'UP01RS4321', 'UP32GH5678']}
                     onSave={handleUpdateDocument}
                 />
             )}
@@ -286,7 +336,8 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                     modalTitle="Add a New Document"
                     isOpen={isAddModalOpen}
                     onClose={() => setIsAddModalOpen(!isAddModalOpen)}
-                    vehicle={tableStructure}
+                    structure={tableStructure}
+                    vehicles={['MH12AB1234', 'UP01RS4321', 'UP32GH5678']}
                     onSave={handleSaveDocument}
                 />
             )}

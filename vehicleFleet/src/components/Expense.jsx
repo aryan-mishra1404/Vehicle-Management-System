@@ -86,12 +86,12 @@ const Expense = ({ finalExpenses, setFinalExpenses }) => {
     }, [totalExpenses, totalMiscellaneousAmount])
     const handleAddExpense = (newExpense) => {
         const newEntry = { ...newExpense, id: expenseData.length + 1 };
-        setExpenseData((prevData) => [...prevData, newEntry]);
+        // setExpenseData((prevData) => [...prevData, newEntry]);
     };
 
     const handleAddMiscellaneous = (newMisc) => {
         const newEntry = { ...newMisc, id: miscellaneousData.length + 1 };
-        setMiscellaneousData((prevData) => [...prevData, newEntry]);
+        // setMiscellaneousData((prevData) => [...prevData, newEntry]);
     };
 
     const expenseColumns = [
@@ -111,6 +111,21 @@ const Expense = ({ finalExpenses, setFinalExpenses }) => {
         { field: 'type', headerName: 'Type', flex: 1 },
         { field: 'amount', headerName: 'Amount', flex: 1 },
     ];
+
+    const expenseStructure = {
+        date: "",
+        vehicleNumber: "",
+        hsd: "",
+        hsdAmount: "",
+        cash: "",
+        totalAmount: "",
+        miscellaneous: "",
+        others: "",
+        miscellaneousAmount: "",
+    }
+
+    const vehicleOptions = ['MH12AB1234', 'UP01RS4321', 'UP32GH5678'];
+    const miscellaneousOptions = ["Driver Salary", "Vehicle Insurance", "Vehicle Permit", "Vehicle Fitness", "Installments", "Income Tax", "Vehicle Pollution", "Maintainance", "Tyres", "Others"]
 
     return (
         <div className="w-[100%] box-border">
@@ -181,19 +196,22 @@ const Expense = ({ finalExpenses, setFinalExpenses }) => {
                     modalTitle="Add Expense"
                     isOpen={isAddModalOpen}
                     onClose={() => setIsAddModalOpen(false)}
-                    vehicle={tableStructure}
+                    structure={expenseStructure}
+                    vehicles={vehicleOptions}
+                    miscellaneousOptions={miscellaneousOptions}
                     onSave={handleAddExpense}
+                    isForExpense={true}
                 />
             )}
 
-            {isAddMiscModalOpen && (
+            {/* {isAddMiscModalOpen && (
                 <ModalComponent
                     modalTitle="Add Miscellaneous Expense"
                     isOpen={isAddMiscModalOpen}
                     onClose={() => setIsAddMiscModalOpen(false)}
                     onSave={handleAddMiscellaneous}
-                />
-            )}
+                /> */}
+
         </div>
     );
 };

@@ -7,24 +7,67 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import ModalComponent from '../components/Modal';
 
-const initialdocuments = [
+const initialDocuments = [
+    {
+        id: 1,
+        document: "Registration Certificate",
+        vehicle: "UP01RS4321",
+        lastIssueDate: "2024-01-10",
+        expiryDate: "2025-01-10",
+        amountPaid: "$150",
+    },
+    {
+        id: 2,
+        document: "Insurance Policy",
+        vehicle: "UP32GH5678",
+        lastIssueDate: "2024-02-15",
+        expiryDate: "2025-02-15",
+        amountPaid: "$200",
+    },
+    {
+        id: 3,
+        document: "Pollution Certificate",
+        vehicle: "UP01RS4321",
+        lastIssueDate: "2024-03-20",
+        expiryDate: "2025-03-20",
+        amountPaid: "$50",
+    },
+    {
+        id: 4,
+        document: "Ownership Transfer",
+        vehicle: "MH12AB1234",
+        lastIssueDate: "2024-04-05",
+        expiryDate: "2025-04-05",
+        amountPaid: "$100",
+    },
+    {
+        id: 5,
+        document: "Fitness Certificate",
+        vehicle: "UP32GH5678",
+        lastIssueDate: "2024-05-25",
+        expiryDate: "2025-05-25",
+        amountPaid: "$300",
+    },
+    {
+        id: 6,
+        document: "Road Tax",
+        vehicle: "MH12AB1234",
+        lastIssueDate: "2024-05-25",
+        expiryDate: "2025-05-25",
+        amountPaid: "$300",
+    },
 
-    { id: 1, documentType: 'LIBRETE', vehicleName: 'Mazda Millenia', lastIssueDate: '2023-08-12', expiryDate: '2024-08-13', chargePaid: 560000, vendor: 'C.K. MOTORS', commission: 40000 },
-    { id: 2, documentType: 'INSPEÇÃO', vehicleName: 'TATA SCHOOL BUS 0017', lastIssueDate: '2023-12-16', expiryDate: '2026-01-15', chargePaid: 4000, vendor: 'Saeed Brothers', commission: 0 },
-    { id: 3, documentType: 'SEGURO DO VEICULO', vehicleName: 'TATA SCHOOL BUS 0017', lastIssueDate: '2023-11-24', expiryDate: '2024-11-23', chargePaid: 60000, vendor: 'Saeed Brothers', commission: 0 },
-    { id: 4, documentType: 'Vehicle Road Worthiness', vehicleName: 'TATA SCHOOL BUS 0017', lastIssueDate: '2022-02-25', expiryDate: '2027-02-25', chargePaid: 6000, vendor: 'Saeed Brothers', commission: 0 },
-    { id: 5, documentType: 'Vehicle Route Permit', vehicleName: 'Volkswagen-70957', lastIssueDate: '2017-12-29', expiryDate: '1986-12-06', chargePaid: 92, vendor: 'Saeed Brothers', commission: 9 },
-    // Add more rows here...
 ];
 const DocumentList = () => {
     const navigate = useNavigate();
-    const [documents, setDocuments] = useState(initialdocuments);
+    const [documents, setDocuments] = useState(initialDocuments);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDocument, setFilterDocument] = useState('');
     const [selectedDocument, setSelectedDocument] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [documentStructure, setDocumentStructure] = useState(null);
+    const vehicleOptions = ['MH12AB1234', 'UP01RS4321', 'UP32GH5678'];
 
     useEffect(() => {
         // Take the first vehicle object from the state
@@ -66,31 +109,29 @@ const DocumentList = () => {
         );
     };
 
-    const filteredDocuments = documents.filter((document) =>
-        document.vehicleName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (filterDocument === '' || document.vehicleName === filterDocument)
+    const filteredDocuments = documents.filter((document) => { return document }
+        // document?.vehicleName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        // (filterDocument === '' || document.vehicleName === filterDocument)
     );
 
 
 
     const columns = [
-        { field: 'id', headerName: 'Sl', width: 70 },
-        { field: 'documentType', headerName: 'Document type', width: 150 },
+        { field: 'id', headerName: 'Sl', flex: .5 },
+        { field: 'document', headerName: 'Document', flex: 1 },
         {
-            field: 'vehicleName',
-            headerName: 'Vehicle name',
+            field: 'vehicle',
+            headerName: 'Vehicle',
             width: 200,
             sortable: true,
         },
-        { field: 'lastIssueDate', headerName: 'Last issue date', width: 150 },
-        { field: 'expiryDate', headerName: 'Expiry date', width: 150 },
-        { field: 'chargePaid', headerName: 'Charge paid', width: 150 },
-        { field: 'vendor', headerName: 'Vendor', width: 150 },
-        { field: 'commission', headerName: 'Commission', width: 150 },
+        { field: 'lastIssueDate', headerName: 'Last issue date', flex: 1 },
+        { field: 'expiryDate', headerName: 'Expiry date', flex: 1 },
+        { field: 'amountPaid', headerName: 'Amount paid', flex: 1 },
         {
             field: 'actions',
             headerName: 'Action',
-            width: 100,
+            flex: 1,
             sortable: false,
             renderCell: (params) => (
                 <>
@@ -110,70 +151,121 @@ const DocumentList = () => {
     // const filteredRows = rows.filter((row) => row.vehicleName.toLowerCase().includes(searchTerm.toLowerCase()));
 
     return (
-        <div className='w-[86%] flex justify-center pt-[5vmax] box-border'>
+        <div className="px-[6vmax] w-[86%] pt-[2vmax] bg-secondary text-primaryColor h-[92vh] overflow-hidden box-border">
+            <div className='flex items-center justify-between'>
 
-            <Box sx={{ width: "89%", height: 550 }}>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid item xs={6}>
-                        <TextField
-                            label="Search"
-                            variant="outlined"
-                            fullWidth
-                            value={searchTerm}
-                            onChange={handleSearch}
-                        />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormControl fullWidth>
-                            <InputLabel id="filter-vehicle-label">Vehicles</InputLabel>
-                            <Select
-                                labelId="filter-vehicle-label"
-                                value={filterDocument}
-                                label="Vehicles"
-                                onChange={handleFilterChange}
-                            >
-                                <MenuItem value="">All</MenuItem>
-                                <MenuItem value="Mazda Millenia">Mazda Millenia </MenuItem>
-                                <MenuItem value="TATA SCHOOL BUS 0017">TATA SCHOOL BUS 0017</MenuItem>
-                                <MenuItem value="Volkswagen-70957">Volkswagen-70957</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Button variant="contained" onClick={() => setIsAddModalOpen(true)} startIcon={<AddIcon />} sx={{ height: '100%' }}>
-                            Add Document
-                        </Button>
-                    </Grid>
-                </Grid>
-                <DataGrid
-                    rows={filteredDocuments}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    checkboxSelection
-                    disableSelectionOnClick
-                />
-            </Box>
-            {selectedDocument && (
-                <ModalComponent
-                    modalTitle="Edit Document"
-                    isOpen={isModalOpen}
-                    onClose={handleCloseModal}
-                    vehicle={selectedDocument}
-                    onSave={handleSaveDocument}
-                />
-            )}
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    sx={{
 
-            {isAddModalOpen && (
-                <ModalComponent
-                    modalTitle="Add a New Document"
-                    isOpen={isAddModalOpen}
-                    onClose={() => setIsAddModalOpen(!isAddModalOpen)}
-                    vehicle={documentStructure}
-                    onSave={handleSaveDocument}
-                />
-            )}
+                        backgroundColor: "white",
+                        width: "35%",
+                        fontSize: "1vmax",
+                        '& .MuiOutlinedInput-root': {
+                            // height: "5vmax",
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                top: '-5px',
+                                height: "3vmax",
 
+                            },
+                            '& fieldset': {
+                                height: '3vmax',
+                            },
+                            '& .MuiInputBase-input': {
+
+                                // paddingTop: '1.5vmax',
+                                // top: '-.9vmax',
+                                height: "3vmax",
+                                margin: "0",
+
+                                // fontSize: '1vmax',   // Change font size of the input content
+                                // color: 'blue',       // Set text color
+                                // paddingLeft: '10px', // Add padding to the left of the input content
+                            },
+                            '& .MuiOutlinedInput-input': {
+                                // paddingTop: '1.5vmax',
+                                fontSize: '1vmax',  // Change input content font size
+
+                            },
+                        },
+                        '& .MuiInputLabel-root': {
+
+                            // bottom: "2vmax",
+                            fontSize: '1vmax',
+
+                            // Bottom: "7.5vmax",
+
+                        },
+                        '& .MuiInputLabel-root.css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root': {
+                            top: '-.25vmax !important',
+                            fontSize: "1vmax !important",
+                        },
+
+                    }}
+                />
+                <FormControl
+                >
+                    <InputLabel id="filter-vehicle-label">Vehicles</InputLabel>
+                    <Select
+                        labelId="filter-vehicle-label"
+                        value={filterDocument}
+                        label="Vehicle"
+                        sx={{
+                            display: "block", width: "20vmax", height: "3vmax",
+                            backgroundColor: "white",
+                            fontSize: "1vmax",
+                        }}
+                        onChange={handleFilterChange}
+                    >
+
+                        {vehicleOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <Button onClick={() => setIsAddModalOpen(true)} variant="contained" startIcon={<AddIcon />} sx={{ height: '100%' }}>
+                    Add document
+                </Button>
+            </div>
+            <div className='shadow-lg mt-4'>
+                <Box>
+
+                    <DataGrid
+                        rows={filteredDocuments}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5, 10, 20]}
+                        checkboxSelection
+                        disableSelectionOnClick
+                    />
+                </Box>
+                {selectedDocument && (
+                    <ModalComponent
+                        modalTitle="Edit Document"
+                        isOpen={isModalOpen}
+                        onClose={handleCloseModal}
+                        structure={selectedDocument}
+                        onSave={handleSaveDocument}
+                    />
+                )}
+
+                {isAddModalOpen && (
+                    <ModalComponent
+                        modalTitle="Add a New Document"
+                        isOpen={isAddModalOpen}
+                        onClose={() => setIsAddModalOpen(!isAddModalOpen)}
+                        structure={documentStructure}
+                        onSave={handleSaveDocument}
+                    />
+                )}
+
+            </div>
         </div>
     );
 };
