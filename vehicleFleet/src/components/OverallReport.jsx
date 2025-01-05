@@ -5,44 +5,52 @@ import { DataGrid } from '@mui/x-data-grid';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import Calendar from './Calendar';
 import * as XLSX from 'xlsx';
-
+import { useSelector } from 'react-redux';
 
 const initialVehicleData = [
-    { id: 1, date: '2024-11-15', vehicleNumber: 'MH12AB1234', weight: 1500, rate: 120, source: 'Chennai', destination: 'Coimbatore', income: 180000 },
-    { id: 2, date: '2024-11-16', vehicleNumber: 'UP01RS4321', weight: 1800, rate: 50, source: 'Delhi', destination: 'Noida', income: 90000 },
-    { id: 3, date: '2024-11-17', vehicleNumber: 'UP32GH5678', weight: 2000, rate: 110, source: 'Lucknow', destination: 'Kanpur', income: 220000 },
-    { id: 4, date: '2024-11-18', vehicleNumber: 'UP32GH5678', weight: 2200, rate: 110, source: 'Bangalore', destination: 'Mysore', income: 242000 },
-    { id: 5, date: '2024-11-19', vehicleNumber: 'MH12AB1234', weight: 1700, rate: 120, source: 'Chennai', destination: 'Coimbatore', income: 204000 },
-    { id: 6, date: '2024-11-20', vehicleNumber: 'MH12AB1234', weight: 1600, rate: 120, source: 'Chennai', destination: 'Coimbatore', income: 192000 },
-    { id: 7, date: '2024-11-21', vehicleNumber: 'UP01RS4321', weight: 2100, rate: 50, source: 'Kolkata', destination: 'Howrah', income: 105000 },
-    { id: 8, date: '2024-11-22', vehicleNumber: 'UP01RS4321', weight: 1900, rate: 50, source: 'Jaipur', destination: 'Ajmer', income: 95000 },
-    { id: 9, date: '2024-11-23', vehicleNumber: 'UP01RS4321', weight: 2000, rate: 50, source: 'Jaipur', destination: 'Ajmer', income: 100000 },
-    { id: 10, date: '2024-11-24', vehicleNumber: 'MH12AB1234', weight: 2200, rate: 50, source: 'Jaipur', destination: 'Ajmer', income: 110000 },
+    { id: 1, date: '15-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1500, unloadingWeight: 1495, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 180000, owner: 'Gopal Logistic' },
+    { id: 2, date: '16-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1800, unloadingWeight: 1795, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 90000, owner: 'Sheetal Meel' },
+    { id: 3, date: '17-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2000, unloadingWeight: 1992, rate: 110, source: 'KKRI', destination: 'BKT', amount: 220000, owner: 'RK Sharma' },
+    { id: 4, date: '18-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 2200, unloadingWeight: 2195, rate: 110, source: 'Chandanber', destination: 'SBT', amount: 242000, owner: 'Anil Mishra' },
+    { id: 5, date: '19-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1700, unloadingWeight: 1690, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 204000, owner: 'Gopal Logistic' },
+    { id: 6, date: '20-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1600, unloadingWeight: 1595, rate: 120, source: 'Raipura', destination: 'Bareily', amount: 192000, owner: 'Sheetal Meel' },
+    { id: 7, date: '21-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2100, unloadingWeight: 2095, rate: 50, source: 'KKRI', destination: 'BKT', amount: 105000, owner: 'RK Sharma' },
+    { id: 8, date: '22-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 1900, unloadingWeight: 1892, rate: 50, source: 'Chandanber', destination: 'SBT', amount: 95000, owner: 'Anil Mishra' },
+    { id: 9, date: '23-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 2000, unloadingWeight: 1995, rate: 50, source: 'Sakhoti', destination: 'Jain', amount: 100000, owner: 'Gopal Logistic' },
+    { id: 10, date: '24-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 2200, unloadingWeight: 2190, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 110000, owner: 'Sheetal Meel' },
 ];
+
 const initialExpenseData = [
-    { id: 1, date: '2024-11-15', vehicleNumber: 'MH12AB1234', hsd: 50, hsdAmount: 5000, cash: 1000, totalAmount: 6050 },
-    { id: 2, date: '2024-11-16', vehicleNumber: 'UP01RS4321', hsd: 40, hsdAmount: 4000, cash: 1500, totalAmount: 5500 },
-    { id: 3, date: '2024-11-17', vehicleNumber: 'UP32GH5678', hsd: 60, hsdAmount: 6000, cash: 2000, totalAmount: 8000 },
+    { id: 1, date: "15-11-2024", vehicleNumber: "MH12AB1234", owner: "Gopal Logistic", hsd: 50, hsdAmount: 5000, cash: 1000, totalAmount: 6050, petrolPump: "Puri P.Pump" },
+    { id: 2, date: "16-11-2024", vehicleNumber: "UP01RS4321", owner: "Sheetal Meel", hsd: 40, hsdAmount: 4000, cash: 1500, totalAmount: 5500, petrolPump: "S.B P.Pump" },
+    { id: 3, date: "17-11-2024", vehicleNumber: "UP32GH5678", owner: "RK Sharma", hsd: 60, hsdAmount: 6000, cash: 2000, totalAmount: 8000, petrolPump: "Sambhal P.Pump" },
+    { id: 4, date: "18-11-2024", vehicleNumber: "DL04EF1234", owner: "Anil Mishra", hsd: 55, hsdAmount: 5500, cash: 1800, totalAmount: 7300, petrolPump: "Delhi P.Pump" },
 ];
 
 const initialMiscellaneousData = [
-    { id: 1, date: '2024-11-16', vehicleNumber: 'MH12AB1234', type: 'Insurance', amount: 5000 },
-    { id: 2, date: '2024-11-17', vehicleNumber: 'UP01RS4321', type: 'Tax', amount: 3000 },
-    { id: 3, date: '2024-11-18', vehicleNumber: 'UP32GH5678', type: 'Servicing', amount: 7000 },
+    { id: 1, date: "16-11-2024", vehicleNumber: "MH12AB1234", owner: "Gopal Logistic", type: "Insurance", amount: 5000 },
+    { id: 2, date: "17-11-2024", vehicleNumber: "UP01RS4321", owner: "Sheetal Meel", type: "Tax", amount: 3000 },
+    { id: 3, date: "18-11-2024", vehicleNumber: "UP32GH5678", owner: "RK Sharma", type: "Servicing", amount: 7000 },
+    { id: 4, date: "19-11-2024", vehicleNumber: "DL04EF1234", owner: "Anil Mishra", type: "Permit Renewal", amount: 4500 },
 ];
 
+const prevDues = 650000;
+
 const OverallReport = () => {
+
+    const { vehicleData } = useSelector((state) => state.vehicleData);
     const [finalExpenses, setFinalExpenses] = useState(0);
     const [totalRounds, setTotalRounds] = useState(0);
     const [totalIncome, setTotalIncome] = useState(0);
 
-    const [vehicleData, setVehicleData] = useState(initialVehicleData);
+    const [incomeData, setIncomeData] = useState(initialVehicleData);
     const [selectedVehicle, setSelectedVehicle] = useState('');
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedOwner, setSelectedOwner] = useState('');
+
+    const [selectedDate, setSelectedDate] = useState(false);
 
     const [selectedSource, setSelectedSource] = useState('');
     const [selectedDestination, setSelectedDestination] = useState('');
-    const prevDues = 650000
 
     const [incomeFilteredData, setIncomeFilteredData] = useState([]);
 
@@ -53,33 +61,61 @@ const OverallReport = () => {
             key: "selection",
         },
     ]);
+    useEffect(() => {
+        console.log(dateState, "date")
+        if (dateState[0].startDate && dateState[0].endDate) setSelectedDate(true);
+    }, [dateState])
 
     useEffect(() => {
-        const incomeSum = incomeFilteredData.reduce((sum, row) => sum + row.weight * row.rate, 0);
+        const incomeSum = incomeFilteredData.reduce((sum, row) => sum + row.unloadingWeight * row.rate, 0);
         setTotalIncome(incomeSum);
         setTotalRounds(incomeFilteredData.length)
     }, [incomeFilteredData, setTotalIncome, setTotalRounds]);
 
     useEffect(() => {
-        const incomeFilteredData = vehicleData?.filter((document) => {
-            if (!selectedVehicle) return true; // If no vehicle is selected, include all rows
+        const parseDate = (dateString) => {
+            const [day, month, year] = dateString.split('-');
+            return new Date(`${year}-${month}-${day}`); // Converts to yyyy-mm-dd format
+        };
 
-            const isVehicleNumberMatch = document.vehicleNumber === selectedVehicle;
+        const filteredData = incomeData?.filter((income) => {
+
+            const isVehicleNumberMatch = selectedVehicle === "" || selectedVehicle === "All" || income.vehicleNumber === selectedVehicle;
+
+            const isOwnerMatch = selectedOwner === "" || selectedOwner === "All" || income.owner === selectedOwner;
+
             const isSourceDestinationMatch =
                 selectedSource && selectedDestination
-                    ? document.source === selectedSource && document.destination === selectedDestination
+                    ? (selectedSource === "All" && selectedDestination === "All") ||
+                    (selectedSource === "All" && income.destination === selectedDestination) ||
+                    (selectedDestination === "All" && income.source === selectedSource) ||
+                    (income.source === selectedSource && income.destination === selectedDestination)
                     : true;
 
-            const isDateInRange =
-                (!dateState[0]?.startDate || // If startDate is not provided, ignore date range check
-                    !dateState[0]?.endDate || // If endDate is not provided, ignore date range check
-                    (new Date(document.date) >= new Date(dateState[0].startDate) &&
-                        new Date(document.date) <= new Date(dateState[0].endDate)));
+            // Ensure the dates are in correct Date object format for comparison
+            const incomeDate = parseDate(income.date);
+            const startDate = parseDate(dateState[0]?.startDate);
+            const endDate = parseDate(dateState[0]?.endDate);
 
-            return isVehicleNumberMatch && isSourceDestinationMatch && isDateInRange;
+            // console.log(incomeDate, typeof (incomeDate))
+            // console.log(startDate, typeof (startDate))
+            // console.log(endDate, typeof (endDate))
+            const isDateInRange =
+                (!dateState[0]?.startDate || !dateState[0]?.endDate || // If startDate or endDate are not provided, ignore date range check
+                    (incomeDate >= startDate && incomeDate <= endDate)); // Compare the incomeDate with the range
+
+            // Apply the filtering logic (return true if all conditions are met)
+            return ((isVehicleNumberMatch && isOwnerMatch) && isSourceDestinationMatch && isDateInRange);
         }) || [];
-        setIncomeFilteredData(incomeFilteredData);
-    }, [vehicleData, selectedVehicle, selectedDate, selectedSource, selectedDestination, dateState]);
+
+        // Default to an empty array if incomeData is null or undefined
+
+        const updatedFilteredDataWithId = filteredData.map((data, index) => ({
+            ...data,
+            id: index + 1, // Set custom id based on index
+        }));
+        setIncomeFilteredData(updatedFilteredDataWithId);
+    }, [incomeData, selectedVehicle, selectedOwner, selectedDate, selectedSource, selectedDestination, dateState]);
 
     const handleExportToExcel = () => {
         const workbook = XLSX.utils.book_new();
@@ -88,54 +124,80 @@ const OverallReport = () => {
         const incomeSheetHeaders = {
             date: "Date",
             vehicleNumber: "Vehicle Number",
-            weight: "Weight (kg)",
+            unloadingWeight: "Weight (kg)",
             rate: "Rate (per kg)",
             source: "Source",
             destination: "Destination",
-            income: "Income",
+            amount: "Income",
         };
         const incomeSheetData = [
-            ...incomeFilteredData.map(({ id, ...rest }) => rest), // Exclude 'id' field
+            ...incomeFilteredData.map(({ id, loadingWeight, owner, ...rest }) => rest), // Exclude 'id' field
             {}, {}, // Empty rows
-            { source: "Total Rounds: ", income: totalRounds },
+            { source: "Total Rounds: ", amount: totalRounds },
             {},
-            { source: "Total Income: ", income: totalIncome },
+            { source: "Total Income: ", amount: totalIncome },
             {},
-            { source: "Total Expense: ", income: finalExpenses },
+            { source: "Total Expense: ", amount: finalExpenses },
             {},
-            { source: "Total Profit: ", income: totalIncome - finalExpenses },
+            { source: "Total Profit: ", amount: totalIncome - finalExpenses },
             {},
-            { source: "Prev Dues: ", income: prevDues },
+            { source: "Prev Dues: ", amount: prevDues },
             {},
-            { source: "Balance: ", income: prevDues + (totalIncome - finalExpenses) },
+            { source: "Balance: ", amount: prevDues + (totalIncome - finalExpenses) },
         ];
 
         // Correctly extract headers as an array of keys
         const incomeHeaders = Object.keys(incomeSheetHeaders);
 
-        // Manually insert headers in the first row, and use skipHeader: true
+        // Create a worksheet and manually insert the headers
         const incomeWorksheet = XLSX.utils.json_to_sheet(incomeSheetData, {
-            header: incomeHeaders, // Use the array of headers
-            skipHeader: true, // Skip default header generation
-            origin: "A2", // Start from the second row
+            header: incomeHeaders,
+            skipHeader: true,
+            origin: "A5", // Start from the 5th row for the main table
         });
 
-        // Insert custom headers in the first row
+        // Insert the selected owner at the top row (centered)
+        const ownerCellRef = XLSX.utils.encode_cell({ r: 0, c: Math.floor(incomeHeaders.length / 2) });
+        incomeWorksheet[ownerCellRef] = {
+            v: selectedOwner || "All", // Display the selected owner or "All" if not selected
+            t: "s",
+        };
+
+        // Apply styling to the owner cell (bold, yellow background, and centered)
+        incomeWorksheet[ownerCellRef].s = {
+            alignment: {
+                horizontal: "center", // Center horizontally
+                vertical: "center", // Center vertically
+            },
+            font: {
+                bold: true, // Bold font
+                sz: 16, // Slightly larger font size
+            },
+            fill: {
+                fgColor: { rgb: "FFFF00" }, // Yellow background color
+            },
+        };
+
+        // Insert custom headers in the third row (two-row gap)
         incomeHeaders.forEach((header, index) => {
-            incomeWorksheet[XLSX.utils.encode_cell({ r: 0, c: index })] = {
+            const cellRef = XLSX.utils.encode_cell({ r: 3, c: index }); // Start from row 3
+            incomeWorksheet[cellRef] = {
                 v: incomeSheetHeaders[header],
-                t: 's',
+                t: "s",
             };
         });
 
         // Style the custom headers (bold)
         incomeHeaders.forEach((header, index) => {
-            const cellRef = XLSX.utils.encode_cell({ r: 0, c: index });
+            const cellRef = XLSX.utils.encode_cell({ r: 3, c: index }); // Start from row 3
             if (incomeWorksheet[cellRef]) {
                 incomeWorksheet[cellRef].s = {
                     font: {
                         bold: true, // Make the font bold
                         sz: 14, // Font size
+                    },
+                    alignment: {
+                        horizontal: "center", // Center align the headers
                     },
                 };
             }
@@ -145,18 +207,32 @@ const OverallReport = () => {
         const expenseSheetHeaders = {
             date: "Date",
             vehicleNumber: "Vehicle Number",
+            // petrolPump: "Petrol Pump",
             hsd: "HSD (liters)",
             hsdAmount: "HSD Amount",
             cash: "Cash",
-            totalAmount: "Total Amount",
+            others: "Others",
+            // salary: "Salary",
+            // fitness: "Fitness",
+            // tax: "Tax",
+            // tyre: "Tyre",
+            // installment: "Installments",
+            // permit: "Permit",
+            totalAmount: "Amount",
+            // finalExpense:"Total Amount"
         };
-        const transformedMiscellaneousData = filteredMiscellaneousData.map(({ id, type, amount, ...rest }) => ({
+        const transformedMiscellaneousData = filteredMiscellaneousData.map(({ id, petrolPump, owner, type, amount, ...rest }) => ({
             ...rest,
-            cash: type,
+            others: type,
+            // salary: type === 'Driver Salary',
+            // insura: type === 'Vehicle Insurance',
+            // salary: type === 'Driver Salary',
+            // salary: type === 'Driver Salary',
+            // salary: type === 'Driver Salary',
             totalAmount: amount,
         }));
         const expenseSheetData = [
-            ...filteredExpenseData.map(({ id, ...rest }) => rest), // Exclude 'id' field
+            ...filteredExpenseData.map(({ id, petrolPump, owner, ...rest }) => rest), // Exclude 'id' field
             ...transformedMiscellaneousData, // Transformed Miscellaneous Data
             {}, {}, // Empty rows
             { cash: "Total Expenses: ", totalAmount: finalExpenses },
@@ -209,28 +285,38 @@ const OverallReport = () => {
         XLSX.writeFile(workbook, 'VehicleData.xlsx');
     };
 
+    const handleSourceData = (event) => {
+        setSelectedSource(event.target.value);
+    };
 
-
-
-
+    const handleDestinationData = (event) => {
+        setSelectedDestination(event.target.value);
+    };
 
     const handleFilterChange = (event) => {
         setSelectedVehicle(event.target.value);
     };
+    const handleOwnerFilterChange = (event) => {
+        setSelectedOwner(event.target.value);
+    };
 
     const incomeColumns = [
-        { field: 'id', headerName: 'Sno.', flex: 0.5 },
+        { field: 'id', headerName: 'S No.', flex: 0.5 },
         { field: 'date', headerName: 'Date', flex: 1 },
         { field: 'vehicleNumber', headerName: 'Vehicle Number', flex: 1 },
+        { field: 'owner', headerName: 'Owners', flex: 1 },
         { field: 'source', headerName: 'Source', flex: 1 },
         { field: 'destination', headerName: 'Destination', flex: 1 },
         {
-            field: 'weight', headerName: 'Weight', flex: 0.8
+            field: 'loadingWeight', headerName: 'Loading Weight', flex: 1
+        },
+        {
+            field: 'unloadingWeight', headerName: 'Unloading Weight', flex: 1
         },
         { field: 'rate', headerName: 'Rate', flex: 0.8 },
         {
-            field: 'income',
-            headerName: 'Income',
+            field: 'amount',
+            headerName: 'Amount',
             flex: 1,
         },
     ];
@@ -248,28 +334,59 @@ const OverallReport = () => {
 
 
     useEffect(() => {
+        const parseDate = (dateString) => {
+            const [day, month, year] = dateString.split('-');
+            return new Date(`${year}-${month}-${day}`); // Converts to yyyy-mm-dd format
+        };
+
         const filteredExpenses = expenseData.filter((expense) => {
-            const isVehicleMatch = selectedVehicle ? expense.vehicleNumber === selectedVehicle : true;
+            const isVehicleNumberMatch = selectedVehicle === "" || selectedVehicle === "All" || expense.vehicleNumber === selectedVehicle;
+
+            const isOwnerMatch = selectedOwner === "" || selectedOwner === "All" || expense.owner === selectedOwner;
+
+            const expenseDate = parseDate(expense.date);
+            const startDate = parseDate(dateState[0]?.startDate);
+            const endDate = parseDate(dateState[0]?.endDate);
+
             const isDateInRange =
-                (!dateState[0]?.startDate ||
-                    !dateState[0]?.endDate ||
-                    (new Date(expense.date) >= new Date(dateState[0].startDate) &&
-                        new Date(expense.date) <= new Date(dateState[0].endDate)));
-            return isVehicleMatch && isDateInRange;
-        });
-        setFilteredExpenseData(filteredExpenses);
+                (!dateState[0]?.startDate || !dateState[0]?.endDate || // If startDate or endDate are not provided, ignore date range check
+                    (expenseDate >= startDate && expenseDate <= endDate));
+
+            // const isDateInRange =
+            //     (!dateState[0]?.startDate ||
+            //         !dateState[0]?.endDate ||
+            //         (new Date(expense.date) >= new Date(dateState[0].startDate) &&
+            //             new Date(expense.date) <= new Date(dateState[0].endDate)));
+            return ((isVehicleNumberMatch && isOwnerMatch) && isDateInRange);
+        }) || [];
+        const updatedFilteredDataWithId = filteredExpenses.map((data, index) => ({
+            ...data,
+            id: index + 1, // Set custom id based on index
+        }));
+        setFilteredExpenseData(updatedFilteredDataWithId);
 
         const filteredMisc = miscellaneousData.filter((misc) => {
-            const isVehicleMatch = selectedVehicle ? misc.vehicleNumber === selectedVehicle : true;
+            const isVehicleNumberMatch = selectedVehicle === "" || selectedVehicle === "All" || misc.vehicleNumber === selectedVehicle;
+
+            const isOwnerMatch = selectedOwner === "" || selectedOwner === "All" || misc.owner === selectedOwner;
+
+            const miscDate = parseDate(misc.date);
+            const startDate = parseDate(dateState[0]?.startDate);
+            const endDate = parseDate(dateState[0]?.endDate);
+
             const isDateInRange =
-                (!dateState[0]?.startDate ||
-                    !dateState[0]?.endDate ||
-                    (new Date(misc.date) >= new Date(dateState[0].startDate) &&
-                        new Date(misc.date) <= new Date(dateState[0].endDate)));
-            return isVehicleMatch && isDateInRange;
-        });
-        setFilteredMiscellaneousData(filteredMisc);
-    }, [expenseData, miscellaneousData, selectedVehicle, dateState]);
+                (!dateState[0]?.startDate || !dateState[0]?.endDate || // If startDate or endDate are not provided, ignore date range check
+                    (miscDate >= startDate && miscDate <= endDate));
+
+            return ((isVehicleNumberMatch && isOwnerMatch) && isDateInRange);
+        }) || [];
+
+        const updatedFilteredMiscDataWithId = filteredMisc.map((data, index) => ({
+            ...data,
+            id: index + 1, // Set custom id based on index
+        }));
+        setFilteredMiscellaneousData(updatedFilteredMiscDataWithId);
+    }, [expenseData, miscellaneousData, selectedVehicle, selectedOwner, dateState]);
 
     useEffect(() => {
         const totalExpense = filteredExpenseData.reduce((sum, row) => sum + row.totalAmount, 0);
@@ -282,10 +399,13 @@ const OverallReport = () => {
         setFinalExpenses(totalExpenses + totalMiscellaneousAmount)
     }, [totalExpenses, totalMiscellaneousAmount])
 
+
     const expenseColumns = [
         { field: 'id', headerName: 'Sno.', flex: 0.5 },
         { field: 'date', headerName: 'Date', flex: 1 },
         { field: 'vehicleNumber', headerName: 'Vehicle Number', flex: 1 },
+        { field: 'owner', headerName: 'Owners', flex: 1 },
+        { field: 'petrolPump', headerName: 'Petrol Pump', flex: 1 },
         { field: 'hsd', headerName: 'HSD (L)', flex: 1 },
         { field: 'hsdAmount', headerName: 'HSD Amount', flex: 1 },
         { field: 'cash', headerName: 'Cash', flex: 1 },
@@ -296,18 +416,21 @@ const OverallReport = () => {
         { field: 'id', headerName: 'Sno.', flex: 0.5 },
         { field: 'date', headerName: 'Date', flex: 1 },
         { field: 'vehicleNumber', headerName: 'Vehicle Number', flex: 1 },
+        { field: 'owner', headerName: 'Owners', flex: 1 },
         { field: 'type', headerName: 'Type', flex: 1 },
         { field: 'amount', headerName: 'Amount', flex: 1 },
     ];
 
 
+
     return (
 
         <div className=" w-full bg-secondary text-primaryColor ">
-            <div className='flex items-center justify-between p-[1vmax]'>
-                <div className='w-[50%] flex items-center justify-between gap-4'>
 
-                    <FormControl fullWidth>
+            <div className='flex items-center justify-between py-4'>
+                <div className='w-[60%] flex items-center justify-between gap-4'>
+
+                    <FormControl sx={{ width: "50%" }}>
                         <InputLabel id="filter-vehicle-label">Vehicles</InputLabel>
                         <Select
                             sx={{ height: "3vmax", backgroundColor: "white", fontSize: ".9vmax" }}
@@ -316,16 +439,32 @@ const OverallReport = () => {
                             label="Vehicles"
                             onChange={handleFilterChange}
                         >
-                            <MenuItem value="">All</MenuItem>
-                            <MenuItem value="MH12AB1234">MH12AB1234</MenuItem>
-                            <MenuItem value="UP01RS4321">UP01RS4321</MenuItem>
-                            <MenuItem value="UP32GH5678">UP32GH5678</MenuItem>
+                            {vehicleData?.Vehicles.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl sx={{ width: "50%" }}>
+                        <InputLabel id="filter-vehicle-label">Owners</InputLabel>
+                        <Select
+                            sx={{ height: "3vmax", backgroundColor: "white", fontSize: ".9vmax" }}
+                            labelId="filter-vehicle-label"
+                            value={selectedOwner}
+                            label="Vehicles"
+                            onChange={handleOwnerFilterChange}
+                        >
+                            {vehicleData?.Owners.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
 
                     <Calendar dateState={dateState} setDateState={setDateState} />
                 </div>
-
                 <Button
                     variant="contained"
                     color="success"
@@ -335,7 +474,48 @@ const OverallReport = () => {
                 >
                     Export to Excel
                 </Button>
+
+
             </div>
+
+            {/* source and destination filters */}
+            {
+                ((selectedVehicle || selectedOwner) && selectedDate) && (<div className='flex items-center justify-between gap-4 pb-4 w-[60%]'>
+
+                    <FormControl fullWidth>
+                        <InputLabel id="filter-source-label">Source</InputLabel>
+                        <Select
+                            sx={{ height: "3vmax", backgroundColor: "white", fontSize: ".9vmax" }}
+                            labelId="filter-source-label"
+                            value={selectedSource}
+                            label="Source"
+                            onChange={handleSourceData}
+                        >
+                            {vehicleData?.Sources.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl fullWidth>
+
+                        <InputLabel id="filter-destination-label">Destination</InputLabel>
+                        <Select
+                            sx={{ height: "3vmax", backgroundColor: "white", fontSize: ".9vmax" }}
+                            labelId="filter-destination-label"
+                            value={selectedDestination}
+                            label="Destination"
+                            onChange={handleDestinationData}
+                        >
+                            {vehicleData?.Destinations.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl> </div>)
+            }
 
             <div className='h-[75vh] py-[2vmax] overflow-auto'>
 

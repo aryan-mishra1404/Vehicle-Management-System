@@ -9,7 +9,8 @@ export default {
       backgroundColor: {
         primary: "#fff",
         secondary: "#F9FAFB",
-        themeColor: "#1570EF",
+        // themeColor: "#1570EF",
+        themeColor: "#1976D2",
       },
       colors: {
         primaryColor: "#101828",

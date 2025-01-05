@@ -19,7 +19,7 @@ function Login() {
         // Simulate login success
         localStorage.setItem("isAuthenticated", true);
         console.log("Login successful, redirecting to /vehicles...");
-        navigate("/reports");
+        navigate("/vehicles");
         window.dispatchEvent(new Event("storage")); // Trigger storage event manually
     };
 

@@ -6,6 +6,7 @@ import Reports from "./pages/Reports";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import { useEffect, useState } from "react";
+import Location from "./pages/Location";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -40,7 +41,9 @@ function App() {
             <>
               <Route path="/vehicles" element={<VehicleList />} />
               <Route path="/vehicle/:id" element={<VehicleList />} />
+              <Route path="/location" element={<Location />} />
               <Route path="/documents" element={<DocumentList />} />
+
               <Route path="/reports" element={<Reports />} />
             </>
           )}

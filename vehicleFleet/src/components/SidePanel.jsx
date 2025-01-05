@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 
 const SidePanel = () => {
     const navigate = useNavigate();
@@ -15,17 +22,26 @@ const SidePanel = () => {
         {
             title: "Vehicle Registration",
             path: "/vehicles",
+            outlinedsvg: <LocalShippingOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
             svg: <LocalShippingRoundedIcon sx={{ fontSize: "1.5vmax" }} />,
         },
         {
             title: "Documents",
             path: "/documents",
+            outlinedsvg: <DescriptionOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
             svg: <DescriptionRoundedIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Locations",
+            path: "/location",
+            outlinedsvg: <LocationOnOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <LocationOnIcon sx={{ fontSize: "1.5vmax" }} />,
         },
         {
             title: "Party Sheet",
             path: "/reports",
-            svg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            outlinedsvg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <AssessmentIcon sx={{ fontSize: "1.5vmax" }} />,
         },
     ];
 
@@ -48,7 +64,7 @@ const SidePanel = () => {
                     onClick={() => navigate(tab.path)} // Navigate to the tab's path
                 >
                     <div>{tab.title}</div>
-                    <div>{tab.svg}</div>
+                    <div>{activeTab === tab.title ? tab.svg : tab.outlinedsvg}</div>
                 </div>
             ))}
         </div>
