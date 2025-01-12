@@ -45,17 +45,20 @@ const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions,
     };
 
     const handleSave = () => {
+        console.log("Save eXpense!!")
         onSave(editedVehicle);
         onClose();
     };
 
     const handleSaveExpense = () => {
+        console.log("Hndle save expense")
         if (editedVehicle.miscellaneous === "Others") {
             const updatedVehicle = {
                 ...editedVehicle,
                 miscellaneous: editedVehicle.others || "", // Ensure there's a fallback value
             };
 
+            console.log(updatedVehicle);
             onSave(updatedVehicle);
             onClose();
         }
@@ -76,6 +79,7 @@ const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions,
             <DialogContent>
                 {Object.entries(editedVehicle)?.map(([key, value]) => {
 
+                    if (key === 'id' || key === "expenseId" || key === "totalAmount" || key === "amount" || key === "type") return
                     if (key === 'vehicleNumber' || key === "miscellaneous" || key === 'petrolPump' || key === "owner") {
                         return (
                             <FormControl fullWidth margin="normal" key={key}>
@@ -309,7 +313,7 @@ const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions,
                 <Button onClick={isForExpense ? handleSaveExpense : handleSave}>Save</Button>
             </DialogActions>
         </Dialog >
-        {["Vehicle Insurance", "Vehicle Permit", "Vehicle Fitness", "Vehicle Pollution", "Income Tax"].includes(miscellaneousType) ?
+        {["Vehicle Insurance", "Vehicle Permit", "Vehicle Fitness", "Vehicle Pollution"].includes(miscellaneousType) ?
             <NewModal
                 modalTitle={`${miscellaneousType} Details`}
                 isOpen={isAddModalOpen}

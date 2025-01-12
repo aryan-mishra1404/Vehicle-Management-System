@@ -122,8 +122,8 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
         console.log(row, "selected Row");
         const { dateValue, ...restRow } = row;
         console.log(dateValue, "DATE VALUE To EDiT");
-        const { id, amount, ...updatedIncomeRow } = row; // Exclude `id` and `income`
-        setSelectedRow(updatedIncomeRow); // Set the remaining properties
+        // const { id, amount, ...updatedIncomeRow } = row; // Exclude `id` and `income`
+        setSelectedRow(row); // Set the remaining properties
         setIsModalOpen(true);
     };
     const handleCloseModal = () => {
@@ -131,27 +131,38 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
         setSelectedRow(null);
     };
     const handleFilterChange = (event) => {
-        // console.log(event.target.value)
         setSelectedVehicle(event.target.value);
     };
 
-    const handleSourceData = (event) => {
-        setSelectedSource(event.target.value);
-    };
-
-    const handleDestinationData = (event) => {
-        setSelectedDestination(event.target.value);
-    };
-
     const handleUpdateDocument = (editedData) => {
-        const updatedData = { ...editedData, amount: editedData.unloadingWeight * editedData.rate, }
-        setIncomeData((prevVehicleData) =>
-            prevVehicleData.map((v) => (v.id === updatedData.id ? updatedData : v))
-        );
+        console.log("Edited Doc!!", editedData);
+
+        // Calculate updated data
+        const updatedData = {
+            ...editedData,
+            amount: editedData.unloadingWeight * editedData.rate,
+        };
+        console.log("Updated Data:", updatedData);
+
+        // Ensure the `id` comparison works
+        setIncomeData((prevVehicleData) => {
+            console.log("Previous Vehicle Data:", prevVehicleData);
+
+            // Map through the existing data
+            return prevVehicleData.map((v) => {
+                // Check for matching ID
+                if (v.id === updatedData.id) {
+                    console.log("Updating Vehicle Data:", v);
+                    return updatedData; // Replace with the updated data
+                }
+                return v; // Keep other entries unchanged
+            });
+        });
     };
+
 
     const handleDelete = (selectedData) => {
-        const updatedData = incomeData.filter((data) => data !== selectedData)
+        const updatedData = incomeData.filter((data) => data.id !== selectedData.id)
 
         setIncomeData(updatedData);
     }

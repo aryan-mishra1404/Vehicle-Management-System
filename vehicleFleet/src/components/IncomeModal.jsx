@@ -56,7 +56,7 @@ const IncomeModal = ({ isOpen, modalTitle, onClose, structure, onSave, optionLis
             <DialogContent>
                 {Object.entries(editedVehicle)?.map(([key, value]) => {
                     // Skip rendering for certain keys
-                    if (["income", "id", "miscellaneousAmount", "others"].includes(key)) return null;
+                    if (["income", "id", "miscellaneousAmount", "amount", "others"].includes(key)) return null;
 
                     // Conditional rendering for "Select" or "TextField"
                     return ["vehicleNumber", "owner", "source", "destination"].includes(key) ? (

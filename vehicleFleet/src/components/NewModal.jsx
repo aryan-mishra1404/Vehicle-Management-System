@@ -173,10 +173,6 @@ const NewModal = ({ isOpen, modalTitle, onClose, structure, onSave, optionList, 
                                                     "& .MuiInputBase-root": {
                                                         height: "3vmax",
                                                     },
-                                                    // "& .MuiOutlinedInput-root": {
-                                                    //     height: "3vmax",
-                                                    // },
-
 
                                                     "& .MuiOutlinedInput-root": {
                                                         "& .MuiOutlinedInput-notchedOutline": { top: "-5px", height: "3vmax" },
@@ -186,6 +182,7 @@ const NewModal = ({ isOpen, modalTitle, onClose, structure, onSave, optionList, 
                                                         "& fieldset": { height: "3vmax" },
                                                         "& .MuiInputBase-input": { height: "3vmax", margin: "0" },
                                                     },
+
                                                     "& .MuiInputLabel-root": { fontSize: "1vmax" },
                                                 }}
                                             />

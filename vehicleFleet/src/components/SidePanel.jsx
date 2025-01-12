@@ -39,10 +39,23 @@ const SidePanel = () => {
         },
         {
             title: "Party Sheet",
-            path: "/reports",
+            path: "/party-sheet",
             outlinedsvg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
             svg: <AssessmentIcon sx={{ fontSize: "1.5vmax" }} />,
         },
+        {
+            title: "Diesel Sheet",
+            path: "/diesel-sheet",
+            outlinedsvg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <AssessmentIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Weight Sheet",
+            path: "/weight-sheet",
+            outlinedsvg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <AssessmentIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+
     ];
 
     // Update activeTab based on the current path
@@ -61,7 +74,7 @@ const SidePanel = () => {
                         ? "shadow-lg text-tertiaryColor bg-primary font-medium z-20"
                         : "text-tertiaryColor"
                         } flex items-end justify-between bg-secondary py-4 px-6 cursor-pointer whitespace-nowrap text-center`}
-                    onClick={() => navigate(tab.path)} // Navigate to the tab's path
+                    onClick={() => navigate(tab.path)}
                 >
                     <div>{tab.title}</div>
                     <div>{activeTab === tab.title ? tab.svg : tab.outlinedsvg}</div>

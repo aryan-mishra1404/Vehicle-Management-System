@@ -15,7 +15,7 @@ const initialState = {
         Owners: ['All', 'Gopal Logistic', 'Sheetal Meel', 'RK Sharma', 'Anil Mishra'],
         Sources: ['All', 'Sakhoti', 'Raipura', 'KKRI', 'Chandanber'],
         Destinations: ['All', 'Jain', 'Bareily', 'BKT', 'SBT'],
-        PetrolPumps: ["S.B Petrol Pump", "Puri Petrol Pump", "Sambhal Petrol Pump", "HSN Petrol Pump", "Barily Petrol Pump", "Billu Petrol Pump"],
+        PetrolPumps: ["All", "S.B Petrol Pump", "Puri Petrol Pump", "Sambhal Petrol Pump", "HSN Petrol Pump", "Barily Petrol Pump", "Billu Petrol Pump"],
 
         MiscellaneousOptions: ["Driver Salary", "Vehicle Insurance", "Vehicle Permit", "Vehicle Fitness", "Installments", "Income Tax", "Vehicle Pollution", "Maintainance", "Tyres", "Others"]
     }

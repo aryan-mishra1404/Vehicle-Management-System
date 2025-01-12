@@ -12,34 +12,34 @@ const initialDocuments = [
     {
         id: 1,
         vehicle: "UP01RS4321",
-        document: "Registration Certificate",
+        document: "Registration Certificate (RC)",
         lastIssueDate: "10-01-2024", // Issue date
-        expiryDate: "10-01-2025",    // 12 months later
-        amountPaid: "$150",
+        expiryDate: "10-04-2025",    // 12 months later
+        amountPaid: "150",
     },
     {
         id: 2,
         vehicle: "UP32GH5678",
         document: "Insurance Policy",
         lastIssueDate: "15-02-2024", // Issue date
-        expiryDate: "15-08-2024",    // 6 months later
-        amountPaid: "$200",
+        expiryDate: "15-02-2025",    // 6 months later
+        amountPaid: "200",
     },
     {
         id: 3,
         vehicle: "UP01RS4321",
-        document: "Pollution Certificate",
+        document: "Pollution Under Control (PUC) Certificate",
         lastIssueDate: "20-03-2024", // Issue date
-        expiryDate: "20-09-2024",    // 6 months later
-        amountPaid: "$50",
+        expiryDate: "10-02-2025",    // 6 months later
+        amountPaid: "50",
     },
     {
         id: 4,
         vehicle: "MH12AB1234",
         document: "Vehicle Permit",
         lastIssueDate: "05-04-2024", // Issue date
-        expiryDate: "05-10-2024",    // 6 months later
-        amountPaid: "$100",
+        expiryDate: "05-05-2025",    // 6 months later
+        amountPaid: "100",
     },
     {
         id: 5,
@@ -47,7 +47,7 @@ const initialDocuments = [
         document: "Fitness Certificate",
         lastIssueDate: "25-05-2024", // Issue date
         expiryDate: "25-05-2025",    // 12 months later
-        amountPaid: "$300",
+        amountPaid: "300",
     },
     {
         id: 6,
@@ -55,7 +55,7 @@ const initialDocuments = [
         document: "Road Tax Certificate",
         lastIssueDate: "25-06-2024", // Issue date
         expiryDate: "25-12-2024",    // 6 months later
-        amountPaid: "$300",
+        amountPaid: "300",
     },
 ];
 

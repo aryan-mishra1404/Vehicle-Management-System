@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import { useEffect, useState } from "react";
 import Location from "./pages/Location";
+import DieselSheet from "./pages/DieselSheet";
+import WeightSheet from "./pages/WeightSheet";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -44,7 +46,9 @@ function App() {
               <Route path="/location" element={<Location />} />
               <Route path="/documents" element={<DocumentList />} />
 
-              <Route path="/reports" element={<Reports />} />
+              <Route path="/party-sheet" element={<Reports />} />
+              <Route path="/diesel-sheet" element={<DieselSheet />} />
+              <Route path="/weight-sheet" element={<WeightSheet />} />
             </>
           )}
           <Route path="/login" element={<Login />} />
