@@ -4,8 +4,8 @@ import Vehicle from "../models/Vehicle.js";
 // Get all vehicles
 const getAllVehicles = async (req, res) => {
   try {
-    const data = await Vehicle.find(); // Fetch all vehicles from the database
-    return res.status(200).json({ vehicles: data });
+    const vehicles = await Vehicle.find();
+    return res.status(200).json({ data: vehicles });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -14,22 +14,28 @@ const getAllVehicles = async (req, res) => {
 // Add a new vehicle
 const addVehicle = async (req, res) => {
   try {
-    const { vehicleNumber, vehicleType, ownership, vendors, status } = req.body; // Get the vehicle data from the request body
-    // Create a new vehicle instance
+    const { vehicleNumber, chassisNumber, ownership, date, capacity, status } =
+      req.body;
+
+    const isVehicleExists = await Vehicle.findOne({ vehicleNumber });
+    if (isVehicleExists)
+      return res.status(409).json({ error: "Vehicle already exists!" });
+
     const newVehicle = await Vehicle.create({
       vehicleNumber,
-      vehicleType,
+      date,
+      chassisNumber,
+      capacity,
       ownership,
-      vendors,
       status,
     });
-    console.log(newVehicle);
-    return res.status(201).json({
-      message: "Vehicle added successfully",
-      vehicle: newVehicle || "no data",
+
+    res.status(201).json({
+      data: newVehicle,
+      message: "Vehicle added successfully!",
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 

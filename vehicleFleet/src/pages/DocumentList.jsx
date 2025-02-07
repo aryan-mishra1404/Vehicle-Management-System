@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import NewModal from '../components/NewModal';
-import { differenceInDays, differenceInMonths, parseISO } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 
 const initialDocuments = [
     {
