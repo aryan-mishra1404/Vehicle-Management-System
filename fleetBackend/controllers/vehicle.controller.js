@@ -1,13 +1,19 @@
 import mongoose from "mongoose";
 import Vehicle from "../models/Vehicle.js";
+import moment from "moment/moment.js";
 
 // Get all vehicles
 const getAllVehicles = async (req, res) => {
   try {
-    const vehicles = await Vehicle.find();
-    return res.status(200).json({ data: vehicles });
+    const data = await Vehicle.find();
+    return res.status(200).json({ success: true, data: data });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("Error fetching associates:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      message: error.message || "Something went wrong",
+    });
   }
 };
 
@@ -16,6 +22,16 @@ const addVehicle = async (req, res) => {
   try {
     const { vehicleNumber, chassisNumber, ownership, date, capacity, status } =
       req.body;
+    if (date) console.log("Date::::::", date);
+    const formattedDate = moment
+      .utc(date, "DD-MM-YYYY")
+      .set({
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      })
+      .toISOString();
 
     const isVehicleExists = await Vehicle.findOne({ vehicleNumber });
     if (isVehicleExists)
@@ -23,7 +39,7 @@ const addVehicle = async (req, res) => {
 
     const newVehicle = await Vehicle.create({
       vehicleNumber,
-      date,
+      date: formattedDate,
       chassisNumber,
       capacity,
       ownership,

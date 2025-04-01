@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import Location from "./pages/Location";
 import DieselSheet from "./pages/DieselSheet";
 import WeightSheet from "./pages/WeightSheet";
+import AssociateList from "./pages/Associates";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -42,6 +43,7 @@ function App() {
           ) : (
             <>
               <Route path="/vehicles" element={<VehicleList />} />
+              <Route path="/associates" element={<AssociateList />} />
               <Route path="/vehicle/:id" element={<VehicleList />} />
               <Route path="/location" element={<Location />} />
               <Route path="/documents" element={<DocumentList />} />

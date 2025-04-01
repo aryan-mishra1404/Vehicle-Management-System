@@ -12,7 +12,8 @@ const initialState = {
             "Fitness Certificate",
             "Vehicle Permit"
         ],
-        Owners: ['All', 'Gopal Logistic', 'Sheetal Meel', 'RK Sharma', 'Anil Mishra'],
+        // Owners: ['All', 'Gopal Logistic', 'Sheetal Meel', 'RK Sharma', 'Anil Mishra'],
+        Owners: [],
         Sources: ['All', 'Sakhoti', 'Raipura', 'KKRI', 'Chandanber'],
         Destinations: ['All', 'Jain', 'Bareily', 'BKT', 'SBT'],
         PetrolPumps: ["All", "S.B Petrol Pump", "Puri Petrol Pump", "Sambhal Petrol Pump", "HSN Petrol Pump", "Barily Petrol Pump", "Billu Petrol Pump"],

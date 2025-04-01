@@ -16,8 +16,15 @@ const vehicleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // userId: {
+    //   type: mongoose.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
+
     ownership: {
       type: String,
+      // enum: ["", ""],
       required: true,
     },
     date: {

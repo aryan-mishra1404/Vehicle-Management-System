@@ -51,7 +51,7 @@ const NewModal = ({ isOpen, modalTitle, onClose, structure, onSave, optionList, 
             <DialogTitle>{modalTitle}</DialogTitle>
             <DialogContent>
                 {Object.entries(editedVehicle)?.map(([key, value]) => {
-                    if (key === "income" || key === "id") return;
+                    if (key === "income" || key === "id" || key === "_id") return;
                     if (key === 'vehicle' || key === "miscellaneous" || key === 'ownership' || key === 'document') {
                         return (
                             <FormControl fullWidth margin="normal" key={key}>

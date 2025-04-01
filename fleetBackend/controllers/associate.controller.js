@@ -2,14 +2,18 @@ import mongoose from "mongoose";
 import Associate from "../models/Associates.js";
 
 const getAllAssociates = async (req, res) => {
+  console.log("into the assocaitine controlelr");
   try {
-    const data = await Associate.find();
+    const data = await Associate.find().select(
+      "_id name profession vehicleNumber"
+    );
     return res.status(200).json({ success: true, data: data });
   } catch (error) {
+    console.error("Error fetching associates:", error);
     return res.status(500).json({
       success: false,
       error: "Internal Server Error",
-      message: error.message,
+      message: error.message || "Something went wrong",
     });
   }
 };

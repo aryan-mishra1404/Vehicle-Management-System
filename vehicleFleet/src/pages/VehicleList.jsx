@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
     TextField,
     Button,
-    Grid,
     IconButton,
     Box,
     Select,
@@ -18,64 +17,64 @@ import AddIcon from '@mui/icons-material/Add';
 import NewModal from '../components/NewModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateVehicleData } from '../Redux/VehicleDataSlice';
-const initialVehicleData = [
-    {
-        id: 1, // Add unique ID here
-        date: "01-12-2024",
-        newVehicle: "UP01RS4321",
-        chassisNumber: "XYZ5678",
-        capacity: 55,
-        ownership: "Gopal Logistic",
-    },
-    {
-        id: 2, // Add unique ID here
-        date: "02-12-2024",
-        newVehicle: "UP32GH5678",
-        chassisNumber: "LMN1234",
-        capacity: 55,
-        ownership: "Sheetal Meel",
-    },
-    {
-        id: 3, // Add unique ID here
-        date: "03-12-2024",
-        newVehicle: "MH12AB1234",
-        chassisNumber: "OPQ3456",
-        capacity: 70,
-        ownership: "RK Sharma",
-    },
-    {
-        id: 4, // Add unique ID here
-        date: "04-12-2024",
-        newVehicle: "DL12EF9876",
-        chassisNumber: "JKL7890",
-        capacity: 60,
-        ownership: "Anil Mishra",
-    },
-    {
-        id: 5, // Add unique ID here
-        date: "05-12-2024",
-        newVehicle: "TN23JK4567",
-        chassisNumber: "DEF2345",
-        capacity: 65,
-        ownership: "Gopal Logistic",
-    },
-    {
-        id: 6, // Add unique ID here
-        date: "07-12-2024",
-        newVehicle: "RJ13TX2718",
-        chassisNumber: "CXA3294",
-        capacity: 55,
-        ownership: "Anil Mishra",
-    },
-];
-
+import { addVehicle, getVehicles } from '../api/VehicleApi';
+// const initialVehicleData = [
+// {
+//     id: 1, // Add unique ID here
+//     date: "01-12-2024",
+//     newVehicle: "UP01RS4321",
+//     chassisNumber: "XYZ5678",
+//     capacity: 55,
+//     ownership: "Gopal Logistic",
+// },
+//     {
+//         id: 2, // Add unique ID here
+//         date: "02-12-2024",
+//         newVehicle: "UP32GH5678",
+//         chassisNumber: "LMN1234",
+//         capacity: 55,
+//         ownership: "Sheetal Meel",
+//     },
+//     {
+//         id: 3, // Add unique ID here
+//         date: "03-12-2024",
+//         newVehicle: "MH12AB1234",
+//         chassisNumber: "OPQ3456",
+//         capacity: 70,
+//         ownership: "RK Sharma",
+//     },
+//     {
+//         id: 4, // Add unique ID here
+//         date: "04-12-2024",
+//         newVehicle: "DL12EF9876",
+//         chassisNumber: "JKL7890",
+//         capacity: 60,
+//         ownership: "Anil Mishra",
+//     },
+//     {
+//         id: 5, // Add unique ID here
+//         date: "05-12-2024",
+//         newVehicle: "TN23JK4567",
+//         chassisNumber: "DEF2345",
+//         capacity: 65,
+//         ownership: "Gopal Logistic",
+//     },
+//     {
+//         id: 6, // Add unique ID here
+//         date: "07-12-2024",
+//         newVehicle: "RJ13TX2718",
+//         chassisNumber: "CXA3294",
+//         capacity: 55,
+//         ownership: "Anil Mishra",
+//     },
+// ];
 
 const VehicleList = () => {
     // const navigate = useNavigate();
     const dispatch = useDispatch();
     const { vehicleData } = useSelector((state) => state.vehicleData);
 
-    const [vehicles, setVehicles] = useState(initialVehicleData);
+    const [vehicles, setVehicles] = useState(null);
     const [vehicleStructure, setVehicleStructure] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -85,11 +84,30 @@ const VehicleList = () => {
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [filteredVehicles, setFilteredVehicles] = useState({});
 
+    const getVehiclesList = async () => {
+        const response = await getVehicles();
+        console.log("vehicle Response:: ", response);
+        if (response) {
+            setVehicles(response?.data)
+        }
+    }
+
+    useEffect(() => {
+        getVehiclesList();
+    }, [])
     useEffect(() => {
         // vehicleStructure
-        const firstVehicle = vehicles[0];
+        const firstVehicle = {
+            id: "",
+            date: "",
+            vehicleNumber: "",
+            chassisNumber: "",
+            capacity: "",
+            ownership: "",
+        };
+        console.log("FirstVehicLe< ", firstVehicle)
         if (firstVehicle) {
-            const emptyVehicle = Object.keys(firstVehicle).reduce((acc, key) => {
+            const emptyVehicle = Object.keys(firstVehicle)?.reduce((acc, key) => {
                 acc[key] = "";
                 return acc;
             }, {});
@@ -100,7 +118,7 @@ const VehicleList = () => {
         const vehiclesListSet = new Set();
         const ownersListSet = new Set();
 
-        vehicles.forEach((vehicle) => {
+        vehicles?.forEach((vehicle) => {
             vehiclesListSet.add(vehicle.newVehicle);
             ownersListSet.add(vehicle.ownership);
         });
@@ -127,7 +145,6 @@ const VehicleList = () => {
         dispatch(updateVehicleData({ Vehicles: uniqueVehiclesListArray, Owners: uniqueOwnersListArray }));
     }, [dispatch, vehicles]);
 
-
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
     };
@@ -137,7 +154,7 @@ const VehicleList = () => {
     };
 
     useEffect(() => {
-        const filteredVehicles = vehicles.filter((vehicle) => {
+        const filteredVehicles = vehicles?.filter((vehicle) => {
             return (
                 Object.values(vehicle).some(value =>
                     value?.toString().toLowerCase().includes(searchTerm?.toLowerCase())
@@ -148,7 +165,7 @@ const VehicleList = () => {
         });
 
         // Map over the filtered vehicles and assign a custom `id` based on the index
-        const updatedVehiclesWithId = filteredVehicles.map((vehicle, index) => ({
+        const updatedVehiclesWithId = filteredVehicles?.map((vehicle, index) => ({
             ...vehicle,
             id: index + 1, // Set custom id based on index
         }));
@@ -173,7 +190,13 @@ const VehicleList = () => {
         setSelectedVehicle(null);
     };
 
-    const handleAddVehicle = (newVehicle) => {
+    const handleAddVehicle = async (newVehicle) => {
+
+        const { id, ...data } = newVehicle;
+        const response = await addVehicle(data);
+        if (response) {
+            getVehiclesList();
+        }
         setVehicles((prevVehicles) => {
             const newVehicleWithId = {
                 ...newVehicle,
@@ -192,7 +215,7 @@ const VehicleList = () => {
         { field: 'id', headerName: 'S.No', flex: .5 },
         { field: 'date', headerName: 'Registration Date', flex: 1 },
         {
-            field: 'newVehicle', headerName: 'Vehicle', flex: 1, renderCell: (params) => (
+            field: 'vehicleNumber', headerName: 'Vehicle Number', flex: 1, renderCell: (params) => (
                 <span
                     style={{ cursor: 'pointer' }}
                 // onClick={() => navigate(`/vehicle/${params.row.id}`)}
@@ -226,10 +249,6 @@ const VehicleList = () => {
     return (
         <div className="px-[6vmax] w-[86%] pt-[2vmax] bg-secondary text-primaryColor h-[92vh] overflow-hidden box-border">
             <div className='flex items-center justify-between'>
-
-
-
-
                 <TextField
                     label="Search"
                     variant="outlined"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
@@ -16,12 +16,16 @@ const SidePanel = () => {
     const location = useLocation();
     const [activeTab, setActiveTab] = useState("");
 
-
-
     const panelTabs = [
         {
             title: "Vehicle Registration",
             path: "/vehicles",
+            outlinedsvg: <LocalShippingOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <LocalShippingRoundedIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Associates",
+            path: "/associates",
             outlinedsvg: <LocalShippingOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
             svg: <LocalShippingRoundedIcon sx={{ fontSize: "1.5vmax" }} />,
         },
