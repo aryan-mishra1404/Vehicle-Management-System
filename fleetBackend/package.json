@@ -7,7 +7,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "npm install && node index.js",
+    "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "dependencies": {
