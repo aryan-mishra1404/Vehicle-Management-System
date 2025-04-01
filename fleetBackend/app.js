@@ -23,4 +23,13 @@ app.use("/api/v1/vehicle", vehicleRoutes);
 app.use("/api/v1/associate", associateRoutes);
 app.use("/api/v1/document", documentRoutes);
 
+app.get("/api/v1/healthcheck", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "Service is Running!",
+    uptime: process.uptime(), // Shows how long the server has been running
+    timestamp: new Date(),
+  });
+});
+
 export default app;

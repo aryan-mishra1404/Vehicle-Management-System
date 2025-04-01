@@ -1,10 +1,12 @@
 import express from "express"; // ES6 import
 import mongoose from "mongoose"; // ES6 import
-import { config } from "dotenv";
+import dotenv from "dotenv";
 import app from "./app.js";
-config({ path: "./config/.env" }); // Adjust if needed
-
+// Adjust if needed
 // Mongoose Connection
+dotenv.config({
+  path: "./.env",
+});
 const PORT = process.env.PORT || 3001;
 
 mongoose
