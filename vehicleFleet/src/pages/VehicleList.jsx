@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import {
     TextField,
     Button,
-    Grid,
     IconButton,
     Box,
     Select,
@@ -15,94 +14,220 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 // import { useNavigate } from 'react-router-dom';
-import ModalComponent from '../components/Modal';
+import NewModal from '../components/NewModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateVehicleData } from '../Redux/VehicleDataSlice';
+import { addVehicle, getVehicles } from '../api/VehicleApi';
+// const initialVehicleData = [
+// {
+//     id: 1, // Add unique ID here
+//     date: "01-12-2024",
+//     newVehicle: "UP01RS4321",
+//     chassisNumber: "XYZ5678",
+//     capacity: 55,
+//     ownership: "Gopal Logistic",
+// },
+//     {
+//         id: 2, // Add unique ID here
+//         date: "02-12-2024",
+//         newVehicle: "UP32GH5678",
+//         chassisNumber: "LMN1234",
+//         capacity: 55,
+//         ownership: "Sheetal Meel",
+//     },
+//     {
+//         id: 3, // Add unique ID here
+//         date: "03-12-2024",
+//         newVehicle: "MH12AB1234",
+//         chassisNumber: "OPQ3456",
+//         capacity: 70,
+//         ownership: "RK Sharma",
+//     },
+//     {
+//         id: 4, // Add unique ID here
+//         date: "04-12-2024",
+//         newVehicle: "DL12EF9876",
+//         chassisNumber: "JKL7890",
+//         capacity: 60,
+//         ownership: "Anil Mishra",
+//     },
+//     {
+//         id: 5, // Add unique ID here
+//         date: "05-12-2024",
+//         newVehicle: "TN23JK4567",
+//         chassisNumber: "DEF2345",
+//         capacity: 65,
+//         ownership: "Gopal Logistic",
+//     },
+//     {
+//         id: 6, // Add unique ID here
+//         date: "07-12-2024",
+//         newVehicle: "RJ13TX2718",
+//         chassisNumber: "CXA3294",
+//         capacity: 55,
+//         ownership: "Anil Mishra",
+//     },
+// ];
 
-const initialVehicles = [
-    { id: 1, name: 'Suzuki Curry', type: 'Pick Up', department: 'Administration', date: '2025-06-25', ownership: 'Own', vendor: 'Notável Binário-Unipessoal' },
-    { id: 2, name: 'Mazda-88814', type: 'Saloon Car', department: 'Sales', date: '1992-06-10', ownership: 'Laii', vendor: 'Karim Cars' },
-    { id: 3, name: 'Cadillac-95769', type: 'TATA SCHOOL BUS 0017', department: 'Customer Service', date: '2016-03-29', ownership: 'Own', vendor: 'Saeed Brothers' },
-    { id: 4, name: 'Cadillac-32003', type: 'Van', department: 'IT', date: '1972-06-07', ownership: 'Third Party Financed', vendor: 'Ali Traders' },
-    { id: 5, name: 'Buick-14376', type: 'Others', department: 'Quality Control', date: '2006-02-07', ownership: 'Rented Own', vendor: 'C.K. MOTORS' },
-    { id: 6, name: 'Porsche-12325', type: 'Pick Up', department: 'Quality Control', date: '2000-07-18', ownership: 'Leased', vendor: 'Karim Cars' },
-    { id: 7, name: 'Lexus-49180', type: 'Others', department: 'Quality Control', date: '1983-05-07', ownership: 'Own', vendor: 'Saeed Brothers' },
-    { id: 8, name: 'Infiniti-46968', type: 'Motorcycle', department: 'IT', date: '1982-04-19', ownership: 'Own', vendor: 'N/A' },
-];
 const VehicleList = () => {
     // const navigate = useNavigate();
-    const [vehicles, setVehicles] = useState(initialVehicles);
+    const dispatch = useDispatch();
+    const { vehicleData } = useSelector((state) => state.vehicleData);
+
+    const [vehicles, setVehicles] = useState(null);
     const [vehicleStructure, setVehicleStructure] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterDepartment, setFilterDepartment] = useState('');
+    const [filterOwnership, setFilterOwnership] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
+    const [filteredVehicles, setFilteredVehicles] = useState({});
+
+    const getVehiclesList = async () => {
+        const response = await getVehicles();
+        console.log("vehicle Response:: ", response);
+        if (response) {
+            setVehicles(response?.data)
+        }
+    }
 
     useEffect(() => {
-        // Take the first vehicle object from the state
-        const firstVehicle = vehicles[0];
-
-        // If there's a vehicle in the state
+        getVehiclesList();
+    }, [])
+    useEffect(() => {
+        // vehicleStructure
+        const firstVehicle = {
+            id: "",
+            date: "",
+            vehicleNumber: "",
+            chassisNumber: "",
+            capacity: "",
+            ownership: "",
+        };
+        console.log("FirstVehicLe< ", firstVehicle)
         if (firstVehicle) {
-            // Create a new object where all the fields of the first vehicle are set to ""
-            const emptyVehicle = Object.keys(firstVehicle).reduce((acc, key) => {
-                acc[key] = "";  // Set each key's value to an empty string
+            const emptyVehicle = Object.keys(firstVehicle)?.reduce((acc, key) => {
+                acc[key] = "";
                 return acc;
             }, {});
-
-            // Update vehicle structure with the modified first vehicle (with empty values)
             setVehicleStructure(emptyVehicle);
         }
-    }, [vehicles]);  // Run this effect whenever `vehicles` state changes
-    // Re-run this effect whenever the vehicles array changes
 
+        // updating VehicleList
+        const vehiclesListSet = new Set();
+        const ownersListSet = new Set();
+
+        vehicles?.forEach((vehicle) => {
+            vehiclesListSet.add(vehicle.newVehicle);
+            ownersListSet.add(vehicle.ownership);
+        });
+
+        // Retrieve previous state values for Vehicles and Owners
+        const { Vehicles: prevVehicles = [], Owners: prevOwners = [] } = vehicleData;
+
+        // Ensure "All" is included if previous arrays are empty
+        const mergedVehiclesListSet = new Set([
+            ...(prevVehicles.length > 0 ? prevVehicles : ["All"]),
+            ...Array.from(vehiclesListSet),
+        ]);
+
+        const mergedOwnersListSet = new Set([
+            ...(prevOwners.length > 0 ? prevOwners : ["All"]),
+            ...Array.from(ownersListSet),
+        ]);
+
+        // Convert to arrays (no need to add "All" again as it's handled in the condition above)
+        const uniqueVehiclesListArray = [...Array.from(mergedVehiclesListSet)];
+        const uniqueOwnersListArray = [...Array.from(mergedOwnersListSet)];
+
+        // Dispatch the updated data
+        dispatch(updateVehicleData({ Vehicles: uniqueVehiclesListArray, Owners: uniqueOwnersListArray }));
+    }, [dispatch, vehicles]);
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
     };
 
     const handleFilterChange = (event) => {
-        setFilterDepartment(event.target.value);
+        setFilterOwnership(event.target.value);
     };
 
-    const filteredVehicles = vehicles.filter((vehicle) =>
-        vehicle.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (filterDepartment === '' || vehicle.department === filterDepartment)
-    );
+    useEffect(() => {
+        const filteredVehicles = vehicles?.filter((vehicle) => {
+            return (
+                Object.values(vehicle).some(value =>
+                    value?.toString().toLowerCase().includes(searchTerm?.toLowerCase())
+                )
+                &&
+                (filterOwnership === '' || filterOwnership === 'All' || vehicle?.ownership === filterOwnership)
+            );
+        });
+
+        // Map over the filtered vehicles and assign a custom `id` based on the index
+        const updatedVehiclesWithId = filteredVehicles?.map((vehicle, index) => ({
+            ...vehicle,
+            id: index + 1, // Set custom id based on index
+        }));
+
+        // Update state with vehicles that now have custom IDs
+        setFilteredVehicles(updatedVehiclesWithId);
+    }, [searchTerm, filterOwnership, vehicles]);
 
     const handleEdit = (vehicle) => {
         setSelectedVehicle(vehicle);
         setIsModalOpen(true);
     };
 
+    const handleDelete = (selected) => {
+        setVehicles((prevVehicles) =>
+            prevVehicles.filter((v) => (v.newVehicle !== selected.newVehicle))
+        );
+    }
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedVehicle(null);
     };
 
+    const handleAddVehicle = async (newVehicle) => {
+
+        const { id, ...data } = newVehicle;
+        const response = await addVehicle(data);
+        if (response) {
+            getVehiclesList();
+        }
+        setVehicles((prevVehicles) => {
+            const newVehicleWithId = {
+                ...newVehicle,
+                id: prevVehicles.length + 1 // Add an `id` based on the current length
+            };
+            return [...prevVehicles, newVehicleWithId];
+        });
+    };
     const handleSaveVehicle = (editedVehicle) => {
         setVehicles((prevVehicles) =>
-            prevVehicles.map((v) => (v.id === editedVehicle.id ? editedVehicle : v))
+            prevVehicles.map((v) => (v.id === selectedVehicle.id ? editedVehicle : v))
         );
     };
 
     const columns = [
-        { field: 'id', headerName: 'Sl', width: 70 },
+        { field: 'id', headerName: 'S.No', flex: .5 },
+        { field: 'date', headerName: 'Registration Date', flex: 1 },
         {
-            field: 'name', headerName: 'Name', width: 150, renderCell: (params) => (
+            field: 'vehicleNumber', headerName: 'Vehicle Number', flex: 1, renderCell: (params) => (
                 <span
-                    style={{ color: 'blue', cursor: 'pointer' }}
+                    style={{ cursor: 'pointer' }}
                 // onClick={() => navigate(`/vehicle/${params.row.id}`)}
                 >
                     {params.value}
                 </span>
             ),
         },
-        { field: 'type', headerName: 'Vehicle type', width: 150 },
-        { field: 'department', headerName: 'Department', width: 150 },
-        { field: 'date', headerName: 'Registration date', width: 150 },
-        { field: 'ownership', headerName: 'Ownership', width: 150 },
-        { field: 'vendor', headerName: 'Vendor', width: 200 },
+        { field: 'chassisNumber', headerName: 'Chassis Number', flex: 1 },
+        { field: 'capacity', headerName: 'Capacity', flex: 1 },
+
+        { field: 'ownership', headerName: 'Ownership', flex: 1 },
         {
             field: 'actions',
             headerName: 'Action',
@@ -113,7 +238,7 @@ const VehicleList = () => {
                     <IconButton color="primary" onClick={() => handleEdit(params.row)}>
                         <EditIcon />
                     </IconButton>
-                    <IconButton color="error">
+                    <IconButton color="error" onClick={() => handleDelete(params.row)}>
                         <DeleteIcon />
                     </IconButton>
                 </>
@@ -122,66 +247,118 @@ const VehicleList = () => {
     ];
 
     return (
-        <div className='w-[86%] h-full flex justify-center pt-[5vmax] box-border'>
-            <Box sx={{ height: 550 }}>
-                <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid item xs={6}>
-                        <TextField
-                            label="Search"
-                            variant="outlined"
-                            fullWidth
-                            value={searchTerm}
-                            onChange={handleSearch}
-                        />
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormControl fullWidth>
-                            <InputLabel id="filter-department-label">Department</InputLabel>
-                            <Select
-                                labelId="filter-department-label"
-                                value={filterDepartment}
-                                label="Department"
-                                onChange={handleFilterChange}
-                            >
-                                <MenuItem value="">All</MenuItem>
-                                <MenuItem value="Administration">Administration</MenuItem>
-                                <MenuItem value="Sales">Sales</MenuItem>
-                                <MenuItem value="Customer Service">Customer Service</MenuItem>
-                                <MenuItem value="IT">IT</MenuItem>
-                                <MenuItem value="Quality Control">Quality Control</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Button onClick={() => setIsAddModalOpen(true)} variant="contained" startIcon={<AddIcon />} sx={{ height: '100%' }}>
-                            Add vehicle
-                        </Button>
-                    </Grid>
-                </Grid>
-                <DataGrid
-                    rows={filteredVehicles}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5, 10, 20]}
+        <div className="px-[6vmax] w-[86%] pt-[2vmax] bg-secondary text-primaryColor h-[92vh] overflow-hidden box-border">
+            <div className='flex items-center justify-between'>
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    sx={{
+                        backgroundColor: "white",
+                        width: "35%",
+                        fontSize: "1vmax",
+                        '& .MuiOutlinedInput-root': {
+                            // height: "5vmax",
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                top: '-5px',
+                                height: "3vmax",
+
+                            },
+                            '& fieldset': {
+                                height: '3vmax',
+                            },
+                            '& .MuiInputBase-input': {
+
+                                // paddingTop: '1.5vmax',
+                                // top: '-.9vmax',
+                                height: "3vmax",
+                                margin: "0",
+
+                                // fontSize: '1vmax',   // Change font size of the input content
+                                // color: 'blue',       // Set text color
+                                // paddingLeft: '10px', // Add padding to the left of the input content
+                            },
+                            '& .MuiOutlinedInput-input': {
+                                // paddingTop: '1.5vmax',
+                                fontSize: '1vmax',  // Change input content font size
+
+                            },
+                        },
+                        '& .MuiInputLabel-root': {
+
+                            // bottom: "2vmax",
+                            fontSize: '1vmax',
+
+                            // Bottom: "7.5vmax",
+
+                        },
+                        '& .MuiInputLabel-root.css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root': {
+                            top: '-.25vmax !important',
+                            fontSize: "1vmax !important",
+                        },
+
+                    }}
                 />
-            </Box>
+                <FormControl
+                >
+                    <InputLabel id="filter-department-label">Ownership</InputLabel>
+                    <Select
+                        labelId="filter-ownership-label"
+                        value={filterOwnership}
+                        label="Ownership"
+                        sx={{
+                            display: "block", width: "20vmax", height: "2.8vmax",
+                            backgroundColor: "white",
+                            fontSize: "1vmax",
+                        }}
+                        onChange={handleFilterChange}
+                    >
+
+                        {vehicleData?.Owners.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <Button onClick={() => setIsAddModalOpen(true)} variant="contained" startIcon={<AddIcon />} sx={{ height: '100%' }}>
+                    Add vehicle
+                </Button>
+            </div>
+            <div className='shadow-lg mt-4'>
+
+
+                <Box >
+                    <DataGrid
+                        rows={filteredVehicles}
+                        columns={columns}
+                        pageSize={5}
+                        checkboxSelection
+                        rowsPerPageOptions={[5, 10, 20]}
+                    />
+                </Box>
+            </div>
             {selectedVehicle && (
-                <ModalComponent
+                <NewModal
                     modalTitle="Edit Vehicle"
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
-                    vehicle={selectedVehicle}
+                    structure={selectedVehicle}
+                    optionList={vehicleData}
                     onSave={handleSaveVehicle}
                 />
             )}
 
             {isAddModalOpen && (
-                <ModalComponent
+                <NewModal
                     modalTitle="Add a New Vehicle"
                     isOpen={isAddModalOpen}
                     onClose={() => setIsAddModalOpen(!isAddModalOpen)}
-                    vehicle={vehicleStructure}
-                    onSave={handleSaveVehicle}
+                    structure={vehicleStructure}
+                    optionList={vehicleData}
+                    onSave={handleAddVehicle}
                 />
             )}
         </div>

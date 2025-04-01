@@ -1,35 +1,57 @@
 import mongoose from "mongoose";
 import Vehicle from "../models/Vehicle.js";
+import moment from "moment/moment.js";
 
 // Get all vehicles
 const getAllVehicles = async (req, res) => {
   try {
-    const data = await Vehicle.find(); // Fetch all vehicles from the database
-    return res.status(200).json({ vehicles: data });
+    const data = await Vehicle.find();
+    return res.status(200).json({ success: true, data: data });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("Error fetching associates:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      message: error.message || "Something went wrong",
+    });
   }
 };
 
 // Add a new vehicle
 const addVehicle = async (req, res) => {
   try {
-    const { vehicleNumber, vehicleType, ownership, vendors, status } = req.body; // Get the vehicle data from the request body
-    // Create a new vehicle instance
+    const { vehicleNumber, chassisNumber, ownership, date, capacity, status } =
+      req.body;
+    if (date) console.log("Date::::::", date);
+    const formattedDate = moment
+      .utc(date, "DD-MM-YYYY")
+      .set({
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      })
+      .toISOString();
+
+    const isVehicleExists = await Vehicle.findOne({ vehicleNumber });
+    if (isVehicleExists)
+      return res.status(409).json({ error: "Vehicle already exists!" });
+
     const newVehicle = await Vehicle.create({
       vehicleNumber,
-      vehicleType,
+      date: formattedDate,
+      chassisNumber,
+      capacity,
       ownership,
-      vendors,
       status,
     });
-    console.log(newVehicle);
-    return res.status(201).json({
-      message: "Vehicle added successfully",
-      vehicle: newVehicle || "no data",
+
+    res.status(201).json({
+      data: newVehicle,
+      message: "Vehicle added successfully!",
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 

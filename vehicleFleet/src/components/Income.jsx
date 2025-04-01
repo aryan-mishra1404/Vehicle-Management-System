@@ -4,29 +4,31 @@ import { DataGrid } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate } from 'react-router-dom';
-import ModalComponent from '../components/Modal';
 import Calendar from './Calendar';
+import { useSelector } from 'react-redux';
+import IncomeModal from './IncomeModal';
 
 const initialVehicleData = [
-    { id: 1, date: '2024-11-15', vehicleNumber: 'MH12AB1234', weight: 1500, rate: 120, source: 'Chennai', destination: 'Coimbatore', income: 180000 },
-    { id: 2, date: '2024-11-16', vehicleNumber: 'UP01RS4321', weight: 1800, rate: 50, source: 'Delhi', destination: 'Noida', income: 90000 },
-    { id: 3, date: '2024-11-17', vehicleNumber: 'UP32GH5678', weight: 2000, rate: 110, source: 'Lucknow', destination: 'Kanpur', income: 220000 },
-    { id: 4, date: '2024-11-18', vehicleNumber: 'UP32GH5678', weight: 2200, rate: 110, source: 'Bangalore', destination: 'Mysore', income: 242000 },
-    { id: 5, date: '2024-11-19', vehicleNumber: 'MH12AB1234', weight: 1700, rate: 120, source: 'Chennai', destination: 'Coimbatore', income: 204000 },
-    { id: 6, date: '2024-11-20', vehicleNumber: 'MH12AB1234', weight: 1600, rate: 120, source: 'Chennai', destination: 'Coimbatore', income: 192000 },
-    { id: 7, date: '2024-11-21', vehicleNumber: 'UP01RS4321', weight: 2100, rate: 50, source: 'Kolkata', destination: 'Howrah', income: 105000 },
-    { id: 8, date: '2024-11-22', vehicleNumber: 'UP01RS4321', weight: 1900, rate: 50, source: 'Jaipur', destination: 'Ajmer', income: 95000 },
-    { id: 9, date: '2024-11-23', vehicleNumber: 'UP01RS4321', weight: 2000, rate: 50, source: 'Jaipur', destination: 'Ajmer', income: 100000 },
-    { id: 10, date: '2024-11-24', vehicleNumber: 'MH12AB1234', weight: 2200, rate: 50, source: 'Jaipur', destination: 'Ajmer', income: 110000 },
+    { id: 1, date: '15-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1500, unloadingWeight: 1495, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 180000, owner: 'Gopal Logistic' },
+    { id: 2, date: '16-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1800, unloadingWeight: 1795, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 90000, owner: 'Sheetal Meel' },
+    { id: 3, date: '17-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2000, unloadingWeight: 1992, rate: 110, source: 'KKRI', destination: 'BKT', amount: 220000, owner: 'RK Sharma' },
+    { id: 4, date: '18-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 2200, unloadingWeight: 2195, rate: 110, source: 'Chandanber', destination: 'SBT', amount: 242000, owner: 'Anil Mishra' },
+    { id: 5, date: '19-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1700, unloadingWeight: 1690, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 204000, owner: 'Gopal Logistic' },
+    { id: 6, date: '20-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1600, unloadingWeight: 1595, rate: 120, source: 'Raipura', destination: 'Bareily', amount: 192000, owner: 'Sheetal Meel' },
+    { id: 7, date: '21-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2100, unloadingWeight: 2095, rate: 50, source: 'KKRI', destination: 'BKT', amount: 105000, owner: 'RK Sharma' },
+    { id: 8, date: '22-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 1900, unloadingWeight: 1892, rate: 50, source: 'Chandanber', destination: 'SBT', amount: 95000, owner: 'Anil Mishra' },
+    { id: 9, date: '23-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 2000, unloadingWeight: 1995, rate: 50, source: 'Sakhoti', destination: 'Jain', amount: 100000, owner: 'Gopal Logistic' },
+    { id: 10, date: '24-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 2200, unloadingWeight: 2190, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 110000, owner: 'Sheetal Meel' },
 ];
 
 
 const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) => {
-    const [vehicleData, setVehicleData] = useState(initialVehicleData);
+
+    const { vehicleData } = useSelector((state) => state.vehicleData);
+    const [incomeData, setIncomeData] = useState(initialVehicleData);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedVehicle, setSelectedVehicle] = useState('');
-    const [selectedDate, setSelectedDate] = useState('h');
+    const [selectedDate, setSelectedDate] = useState(false);
 
     const [selectedSource, setSelectedSource] = useState('');
     const [selectedDestination, setSelectedDestination] = useState('');
@@ -41,49 +43,72 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
     const [dateState, setDateState] = useState([
         {
             startDate: "",
-            endDate: "", // Set a default endDate
-            key: "selection",
+            endDate: "",
         },
     ]);
 
+
+
     useEffect(() => {
-        const incomeSum = filteredData.reduce((sum, row) => sum + row.weight * row.rate, 0);
+        const incomeSum = filteredData.reduce((sum, row) => sum + row.unloadingWeight * row.rate, 0);
         setTotalIncome(incomeSum);
         setTotalRounds(filteredData.length)
-    }, [filteredData]);
-
+    }, [filteredData, setTotalIncome, setTotalRounds]);
 
     useEffect(() => {
-        const filteredData = vehicleData?.filter((document) => {
+        console.log(dateState, "date")
+        if (dateState[0].startDate && dateState[0].endDate) setSelectedDate(true);
+    }, [dateState])
+
+    useEffect(() => {
+        const parseDate = (dateString) => {
+            const [day, month, year] = dateString.split('-');
+            return new Date(`${year}-${month}-${day}`); // Converts to yyyy-mm-dd format
+        };
+
+        const filteredData = incomeData?.filter((income) => {
             if (!selectedVehicle) return true; // If no vehicle is selected, include all rows
 
-            const isVehicleNumberMatch = document.vehicleNumber === selectedVehicle;
+            const isVehicleNumberMatch = selectedVehicle === "All" || income.vehicleNumber === selectedVehicle;
             const isSourceDestinationMatch =
                 selectedSource && selectedDestination
-                    ? document.source === selectedSource && document.destination === selectedDestination
+                    ? income.source === selectedSource && income.destination === selectedDestination
                     : true;
 
-            const isDateInRange =
-                (!dateState[0]?.startDate || // If startDate is not provided, ignore date range check
-                    !dateState[0]?.endDate || // If endDate is not provided, ignore date range check
-                    (new Date(document.date) >= new Date(dateState[0].startDate) &&
-                        new Date(document.date) <= new Date(dateState[0].endDate)));
+            // Ensure the dates are in correct Date object format for comparison
+            const incomeDate = parseDate(income.date);
+            const startDate = parseDate(dateState[0]?.startDate);
+            const endDate = parseDate(dateState[0]?.endDate);
 
+            // console.log(incomeDate, typeof (incomeDate))
+            // console.log(startDate, typeof (startDate))
+            // console.log(endDate, typeof (endDate))
+            const isDateInRange =
+                (!dateState[0]?.startDate || !dateState[0]?.endDate || // If startDate or endDate are not provided, ignore date range check
+                    (incomeDate >= startDate && incomeDate <= endDate)); // Compare the incomeDate with the range
+
+            // Apply the filtering logic (return true if all conditions are met)
             return isVehicleNumberMatch && isSourceDestinationMatch && isDateInRange;
         }) || [];
 
-        // Default to an empty array if vehicleData is null or undefined
+        // Default to an empty array if incomeData is null or undefined
 
-        const firstVehicle = vehicleData?.[0];
+        const firstVehicle = incomeData?.[0];
         if (firstVehicle) {
-            const emptyVehicle = Object.keys(firstVehicle).reduce((acc, key) => {
+            const { amount, id, ...incomeStructure } = firstVehicle;
+            const emptyIncomeStructure = Object.keys(incomeStructure).reduce((acc, key) => {
                 acc[key] = '';
                 return acc;
             }, {});
-            setTableStructure(emptyVehicle);
+            setTableStructure(emptyIncomeStructure);
         }
-        setFilteredData(filteredData);
-    }, [vehicleData, selectedVehicle, selectedDate, selectedSource, selectedDestination, dateState]);
+
+        const updatedFilteredDataWithId = filteredData.map((data, index) => ({
+            ...data,
+            id: index + 1, // Set custom id based on index
+        }));
+        setFilteredData(updatedFilteredDataWithId);
+    }, [incomeData, selectedVehicle, selectedDate, selectedSource, selectedDestination, dateState]);
 
 
     const handleCalculatedIncome = (data) => {
@@ -94,7 +119,11 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
     };
 
     const handleEdit = (row) => {
-        setSelectedRow(row);
+        console.log(row, "selected Row");
+        const { dateValue, ...restRow } = row;
+        console.log(dateValue, "DATE VALUE To EDiT");
+        // const { id, amount, ...updatedIncomeRow } = row; // Exclude `id` and `income`
+        setSelectedRow(row); // Set the remaining properties
         setIsModalOpen(true);
     };
     const handleCloseModal = () => {
@@ -105,43 +134,67 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
         setSelectedVehicle(event.target.value);
     };
 
-    const handleSourceData = (event) => {
-        setSelectedSource(event.target.value);
-    };
-
-    const handleDestinationData = (event) => {
-        setSelectedDestination(event.target.value);
-    };
-
     const handleUpdateDocument = (editedData) => {
-        setVehicleData((prevVehicleData) =>
-            prevVehicleData.map((v) => (v.id === editedData.id ? editedData : v))
-        );
+        console.log("Edited Doc!!", editedData);
+
+        // Calculate updated data
+        const updatedData = {
+            ...editedData,
+            amount: editedData.unloadingWeight * editedData.rate,
+        };
+        console.log("Updated Data:", updatedData);
+
+        // Ensure the `id` comparison works
+        setIncomeData((prevVehicleData) => {
+            console.log("Previous Vehicle Data:", prevVehicleData);
+
+            // Map through the existing data
+            return prevVehicleData.map((v) => {
+                // Check for matching ID
+                if (v.id === updatedData.id) {
+                    console.log("Updating Vehicle Data:", v);
+                    return updatedData; // Replace with the updated data
+                }
+                return v; // Keep other entries unchanged
+            });
+        });
     };
+
 
     const handleDelete = (selectedData) => {
-        const updatedData = vehicleData.filter((data) => data !== selectedData)
+        const updatedData = incomeData.filter((data) => data.id !== selectedData.id)
 
-        setVehicleData(updatedData);
+        setIncomeData(updatedData);
     }
     const handleSaveDocument = (newData) => {
-        const newDocument = { ...newData, id: vehicleData.length + 1 }; // Add a unique id
-        setVehicleData((prevVehicleData) => [...prevVehicleData, newDocument]);
+        console.log(newData);
+        const processedData = {
+            ...newData,
+            id: incomeData.length + 1,               // Assign a unique id
+            amount: newData.unloadingWeight * newData.rate,    // Calculate income dynamically
+        };
+        console.log(processedData, "processed data");
+        setIncomeData((prevVehicleData) => [...prevVehicleData, processedData]);
     };
 
+
     const columns = [
-        { field: 'id', headerName: 'Sno.', flex: 0.5 },
+        { field: 'id', headerName: 'S No.', flex: 0.5 },
         { field: 'date', headerName: 'Date', flex: 1 },
         { field: 'vehicleNumber', headerName: 'Vehicle Number', flex: 1 },
+        { field: 'owner', headerName: 'Owners', flex: 1 },
         { field: 'source', headerName: 'Source', flex: 1 },
         { field: 'destination', headerName: 'Destination', flex: 1 },
         {
-            field: 'weight', headerName: 'Weight', flex: 0.8
+            field: 'loadingWeight', headerName: 'Loading Weight', flex: 1
+        },
+        {
+            field: 'unloadingWeight', headerName: 'Unloading Weight', flex: 1
         },
         { field: 'rate', headerName: 'Rate', flex: 0.8 },
         {
-            field: 'income',
-            headerName: 'Income',
+            field: 'amount',
+            headerName: 'Amount',
             flex: 1,
         },
         {
@@ -173,16 +226,15 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                         <h3 className='text-base font-normal'>Total Income Generated: <span className='text-xl font-medium'>
                             ₹{totalIncome}
                         </span> </h3>
-
                     </div>
                 )
             }
 
             <div className=' '>
                 <div className='flex items-center justify-between py-4'>
-                    <div className='w-[50%] flex items-center justify-between gap-4'>
+                    <div className='w-[60%] flex items-center justify-between gap-4'>
 
-                        <FormControl fullWidth>
+                        <FormControl sx={{ width: "50%" }}>
                             <InputLabel id="filter-vehicle-label">Vehicles</InputLabel>
                             <Select
                                 sx={{ height: "3vmax", backgroundColor: "white", fontSize: ".9vmax" }}
@@ -191,10 +243,11 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                                 label="Vehicles"
                                 onChange={handleFilterChange}
                             >
-                                <MenuItem value="">All</MenuItem>
-                                <MenuItem value="MH12AB1234">MH12AB1234</MenuItem>
-                                <MenuItem value="UP01RS4321">UP01RS4321</MenuItem>
-                                <MenuItem value="UP32GH5678">UP32GH5678</MenuItem>
+                                {vehicleData?.Vehicles.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
 
@@ -204,15 +257,15 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                     <Button
                         variant="contained"
                         onClick={() => setIsAddModalOpen(true)}
-                        startIcon={<AddIcon />}
-                        sx={{ height: '100%' }}
+                        startIcon={<AddIcon className='w-[5vmax] h-[5vmax]' />}
+                        sx={{ height: '100%', fontSize: ".9vmax" }}
                     >
                         Add data
                     </Button>
                 </div>
 
-                {
-                    (selectedVehicle && selectedDate) && (<div className='flex items-center justify-between gap-4 pb-4'>
+                {/* {
+                    (selectedVehicle && selectedDate) && (<div className='flex items-center justify-between gap-4 pb-4 w-[60%]'>
 
                         <FormControl fullWidth>
                             <InputLabel id="filter-source-label">Source</InputLabel>
@@ -223,12 +276,11 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                                 label="Source"
                                 onChange={handleSourceData}
                             >
-                                <MenuItem value="">All</MenuItem>
-                                <MenuItem value="Jaipur">Jaipur</MenuItem>
-                                <MenuItem value="Kolkata">Kolkata</MenuItem>
-                                <MenuItem value="Chennai">Chennai</MenuItem>
-                                <MenuItem value="Delhi">Delhi</MenuItem>
-                                <MenuItem value="Lucknow">Lucknow</MenuItem>
+                                {vehicleData?.Sources.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                         <FormControl fullWidth>
@@ -241,15 +293,14 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                                 label="Destination"
                                 onChange={handleDestinationData}
                             >
-                                <MenuItem value="">All</MenuItem>
-                                <MenuItem value="Coimbatore">Coimbatore</MenuItem>
-                                <MenuItem value="Noida">Noida</MenuItem>
-                                <MenuItem value="Kanpur">Kanpur</MenuItem>
-                                <MenuItem value="Howrah">Howrah</MenuItem>
-                                <MenuItem value="Ajmer">Ajmer</MenuItem>
+                                {vehicleData?.Destinations.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl> </div>)
-                }
+                } */}
                 <Box sx={{ width: '100%', height: "auto", maxHeight: "60vh", overflow: "auto" }}>
 
                     <DataGrid
@@ -260,36 +311,75 @@ const Income = ({ totalIncome, setTotalIncome, totalRounds, setTotalRounds }) =>
                         checkboxSelection
                         disableSelectionOnClick
                         sx={{
+                            fontSize: '.9vmax !important',
                             '& .MuiDataGrid-root': {
-                                border: 0, // Removes unnecessary borders for a cleaner look
+                                border: 0, // Removes the outer border
+                                fontSize: "0.9vmax ", // Scales font size for responsiveness
+                                fontFamily: "Inter, sans-serif", // Consistent font family
                             },
-                            '& .MuiDataGrid-columnHeader': {
-                                backgroundColor: '#f5f5f5', // Optional: Add header background styling
+                            '& .MuiDataGrid-columnHeaders': {
+                                backgroundColor: '#f5f5f5', // Light gray header background
+                                color: '#333', // Dark text for better readability
+                                fontSize: "1vmax",
+                                fontWeight: 'bold', // Makes headers stand out
+                                borderBottom: '1px solid #ddd', // 
+
+
+                            },
+                            '& .MuiDataGrid-columnSeparator': {
+                                display: 'none', // Removes separators between column headers
+                            },
+                            '& .MuiDataGrid-row': {
+                                '&:hover': {
+                                    backgroundColor: '#fafafa', // Subtle row hover effect
+                                },
+                            },
+                            '& .MuiDataGrid-cell': {
+                                borderBottom: '1px solid #eee', // Light bottom border for rows
+
+                                padding: '0 .5vmax', // Adds cell padding
+                            },
+                            '& .MuiDataGrid-footerContainer': {
+                                backgroundColor: '#f9f9f9', // Footer background
+                                borderTop: '1px solid #ddd', // Top border for separation
+                            },
+                            '& .MuiCheckbox-root': {
+                                color: '#333', // Checkbox color
+                                width: "1vmax",
+                                height: "1vmax"
+                            },
+                            '& .MuiDataGrid-toolbarContainer': {
+                                padding: '0.5vmax', // Toolbar padding
                             },
                         }}
                     />
+
                 </Box>
             </div>
 
             {selectedRow && (
-                <ModalComponent
+                <IncomeModal
                     modalTitle="Edit Document"
                     isOpen={isModalOpen}
                     onClose={handleCloseModal}
-                    vehicle={selectedRow}
                     onSave={handleUpdateDocument}
+                    structure={selectedRow}
+                    optionList={vehicleData}
                 />
             )}
 
             {isAddModalOpen && (
-                <ModalComponent
-                    modalTitle="Add a New Document"
+                <IncomeModal
+                    modalTitle="Add a New Income"
                     isOpen={isAddModalOpen}
                     onClose={() => setIsAddModalOpen(!isAddModalOpen)}
-                    vehicle={tableStructure}
+                    structure={tableStructure}
+                    optionList={vehicleData}
                     onSave={handleSaveDocument}
                 />
             )}
+
+
         </div>
     );
 };

@@ -1,71 +1,91 @@
-import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 
 const SidePanel = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const [activeTab, setActiveTab] = useState("");
+
+    const panelTabs = [
+        {
+            title: "Vehicle Registration",
+            path: "/vehicles",
+            outlinedsvg: <LocalShippingOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <LocalShippingRoundedIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Associates",
+            path: "/associates",
+            outlinedsvg: <LocalShippingOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <LocalShippingRoundedIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Documents",
+            path: "/documents",
+            outlinedsvg: <DescriptionOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <DescriptionRoundedIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Locations",
+            path: "/location",
+            outlinedsvg: <LocationOnOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <LocationOnIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Party Sheet",
+            path: "/party-sheet",
+            outlinedsvg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <AssessmentIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Diesel Sheet",
+            path: "/diesel-sheet",
+            outlinedsvg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <AssessmentIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+        {
+            title: "Weight Sheet",
+            path: "/weight-sheet",
+            outlinedsvg: <AssessmentOutlinedIcon sx={{ fontSize: "1.5vmax" }} />,
+            svg: <AssessmentIcon sx={{ fontSize: "1.5vmax" }} />,
+        },
+
+    ];
+
+    // Update activeTab based on the current path
+    useEffect(() => {
+        const currentTab = panelTabs.find((tab) => tab.path === location.pathname);
+        // console.log(currentTab, "ctab");
+        setActiveTab(currentTab?.title || "");
+    }, [location.pathname]); // Run this whenever the route changes
+
     return (
-        <div className=" h-full w-[14%] bg-gray-300 border-2 border-black flex flex-col gap-[2vmax] px-4 py-8">
-
-
-
-            <div onClick={() => navigate('/vehicles')} className="flex items-end justify-between bg-white rounded-xl p-2 cursor-pointer whitespace-nowrap">
-                <h3 className="text-lg text-[#274962]">
-                    Vehicle Fleet
-                </h3>
-                <svg className="w-8" viewBox="0 0 512 512" id="svg2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" fill="#000000">
-                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <defs id="defs6"></defs>
-                        <path
-                            d="M 256,32 A 135,10 0 0 0 122.20312,40.742188 30,80 0 0 0 96,120 l 0,20 -4.083984,0 A 8.0008,10.001 0 0 0 90.279297,137.49609 8.0008,10.001 0 0 0 93,130 l 0,-10 a 8.0008,10.001 0 0 0 -8,-10 l -16,0 a 8.0008,10.001 0 0 0 -8,10 l 0,10 a 8.0008,10.001 0 0 0 2.720703,7.50391 A 8.0008,10.001 0 0 0 61,145 l 0,50 a 8.0008,10.001 0 0 0 8,10 l 16,0 a 8.0008,10.001 0 0 0 6.917969,-5 L 96,200 l 0,90 a 20,10 0 0 0 10,8.64844 l 0,11.67773 A 20,10 0 0 0 91,320 l 0,100 a 20,40 0 0 0 10,34.59766 l 0,17.18359 c -4e-5,4.53911 3.67964,8.21879 8.21875,8.21875 l 33.5625,0 c 4.53911,4e-5 8.21879,-3.67964 8.21875,-8.21875 L 151,460 l 210,0 0,11.78125 c -4e-5,4.53911 3.67964,8.21879 8.21875,8.21875 l 33.5625,0 c 4.53911,4e-5 8.21879,-3.67964 8.21875,-8.21875 l 0,-17.19727 A 20,40 0 0 0 421,420 l 0,-100 a 20,10 0 0 0 -15,-9.66992 l 0,-11.6836 A 20,10 0 0 0 416,290 l 0,-90 4.08203,0 A 8.0008,10.001 0 0 0 427,205 l 16,0 a 8.0008,10.001 0 0 0 8,-10 l 0,-50 A 8.0008,10.001 0 0 0 448.2793,137.50391 8.0008,10.001 0 0 0 451,130 l 0,-10 a 8.0008,10.001 0 0 0 -8,-10 l -16,0 a 8.0008,10.001 0 0 0 -8,10 l 0,10 a 8.0008,10.001 0 0 0 2.7207,7.49609 A 8.0008,10.001 0 0 0 420.08398,140 L 416,140 416,120 A 30,80 0 0 0 389.59375,40.642578 135,10 0 0 0 256,32 Z m -137.15625,58 15.82227,0 34.4746,0 173.70313,0 34.49023,0 15.80664,0 c 4.77637,5.59e-4 8.88569,3.378489 9.81055,8.06445 2.01132,10.18974 3.03623,21.19633 3.04883,32.35938 l 0,0.0117 L 406,200 c -5.5e-4,5.52262 -4.47738,9.99945 -10,10 l -28,0 -224,0 -28,0 c -5.52262,-5.5e-4 -9.99945,-4.47738 -10,-10 l 0,-69.56445 0,-0.008 c 0.007,-11.15969 1.02625,-22.16523 3.03125,-32.35742 0.92257,-4.689004 5.0336,-8.070133 9.8125,-8.07031 z M 131,310 l 21.42773,0 c 2.65571,-6.2e-4 4.84866,2.07484 4.99415,4.72656 l 3.57031,65 C 161.14877,382.5909 158.86862,384.99951 156,385 l -25,0 c -2.76131,-2.8e-4 -4.99972,-2.23869 -5,-5 l 0,-65 c 2.8e-4,-2.76131 2.23869,-4.99972 5,-5 z M 359.57227,310 381,310 c 2.76131,2.8e-4 4.99972,2.23869 5,5 l 0,65 c -2.8e-4,2.76131 -2.23869,4.99972 -5,5 l -25,0 c -2.86862,-4.9e-4 -5.14877,-2.4091 -4.99219,-5.27344 l 3.57031,-65 c 0.14549,-2.65172 2.33844,-4.72718 4.99415,-4.72656 z M 173.5,322 l 165,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -165,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 163,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -163,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 161,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -161,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 159,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -159,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 13.34375,45 132.3125,0 13.34375,0 0,11 a 10,10 0 0 1 -10,10 l -139,0 a 10,10 0 0 1 -10,-10 l 0,-11 z"
-                            id="path14"
-                            style={{ fill: '#000000' }}
-                        />
-                    </g>
-                </svg>
-
-            </div>
-            <div onClick={() => navigate('/documents')} className="flex items-end justify-between bg-white rounded-xl p-2 cursor-pointer whitespace-nowrap">
-                <h3 className="text-lg text-[#274962]">
-                    Documents
-                </h3>
-                <svg className="w-8" viewBox="0 0 512 512" id="svg2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" fill="#000000">
-                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <defs id="defs6"></defs>
-                        <path
-                            d="M 256,32 A 135,10 0 0 0 122.20312,40.742188 30,80 0 0 0 96,120 l 0,20 -4.083984,0 A 8.0008,10.001 0 0 0 90.279297,137.49609 8.0008,10.001 0 0 0 93,130 l 0,-10 a 8.0008,10.001 0 0 0 -8,-10 l -16,0 a 8.0008,10.001 0 0 0 -8,10 l 0,10 a 8.0008,10.001 0 0 0 2.720703,7.50391 A 8.0008,10.001 0 0 0 61,145 l 0,50 a 8.0008,10.001 0 0 0 8,10 l 16,0 a 8.0008,10.001 0 0 0 6.917969,-5 L 96,200 l 0,90 a 20,10 0 0 0 10,8.64844 l 0,11.67773 A 20,10 0 0 0 91,320 l 0,100 a 20,40 0 0 0 10,34.59766 l 0,17.18359 c -4e-5,4.53911 3.67964,8.21879 8.21875,8.21875 l 33.5625,0 c 4.53911,4e-5 8.21879,-3.67964 8.21875,-8.21875 L 151,460 l 210,0 0,11.78125 c -4e-5,4.53911 3.67964,8.21879 8.21875,8.21875 l 33.5625,0 c 4.53911,4e-5 8.21879,-3.67964 8.21875,-8.21875 l 0,-17.19727 A 20,40 0 0 0 421,420 l 0,-100 a 20,10 0 0 0 -15,-9.66992 l 0,-11.6836 A 20,10 0 0 0 416,290 l 0,-90 4.08203,0 A 8.0008,10.001 0 0 0 427,205 l 16,0 a 8.0008,10.001 0 0 0 8,-10 l 0,-50 A 8.0008,10.001 0 0 0 448.2793,137.50391 8.0008,10.001 0 0 0 451,130 l 0,-10 a 8.0008,10.001 0 0 0 -8,-10 l -16,0 a 8.0008,10.001 0 0 0 -8,10 l 0,10 a 8.0008,10.001 0 0 0 2.7207,7.49609 A 8.0008,10.001 0 0 0 420.08398,140 L 416,140 416,120 A 30,80 0 0 0 389.59375,40.642578 135,10 0 0 0 256,32 Z m -137.15625,58 15.82227,0 34.4746,0 173.70313,0 34.49023,0 15.80664,0 c 4.77637,5.59e-4 8.88569,3.378489 9.81055,8.06445 2.01132,10.18974 3.03623,21.19633 3.04883,32.35938 l 0,0.0117 L 406,200 c -5.5e-4,5.52262 -4.47738,9.99945 -10,10 l -28,0 -224,0 -28,0 c -5.52262,-5.5e-4 -9.99945,-4.47738 -10,-10 l 0,-69.56445 0,-0.008 c 0.007,-11.15969 1.02625,-22.16523 3.03125,-32.35742 0.92257,-4.689004 5.0336,-8.070133 9.8125,-8.07031 z M 131,310 l 21.42773,0 c 2.65571,-6.2e-4 4.84866,2.07484 4.99415,4.72656 l 3.57031,65 C 161.14877,382.5909 158.86862,384.99951 156,385 l -25,0 c -2.76131,-2.8e-4 -4.99972,-2.23869 -5,-5 l 0,-65 c 2.8e-4,-2.76131 2.23869,-4.99972 5,-5 z M 359.57227,310 381,310 c 2.76131,2.8e-4 4.99972,2.23869 5,5 l 0,65 c -2.8e-4,2.76131 -2.23869,4.99972 -5,5 l -25,0 c -2.86862,-4.9e-4 -5.14877,-2.4091 -4.99219,-5.27344 l 3.57031,-65 c 0.14549,-2.65172 2.33844,-4.72718 4.99415,-4.72656 z M 173.5,322 l 165,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -165,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 163,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -163,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 161,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -161,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 159,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -159,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 13.34375,45 132.3125,0 13.34375,0 0,11 a 10,10 0 0 1 -10,10 l -139,0 a 10,10 0 0 1 -10,-10 l 0,-11 z"
-                            id="path14"
-                            style={{ fill: '#000000' }}
-                        />
-                    </g>
-                </svg>
-
-            </div>
-            <div onClick={() => navigate('/reports')} className="flex items-end justify-between bg-white rounded-xl p-2 cursor-pointer whitespace-nowrap">
-                <h3 className="text-lg text-[#274962]">
-                    Reports
-                </h3>
-                <svg className="w-8" viewBox="0 0 512 512" id="svg2" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" fill="#000000">
-                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <defs id="defs6"></defs>
-                        <path
-                            d="M 256,32 A 135,10 0 0 0 122.20312,40.742188 30,80 0 0 0 96,120 l 0,20 -4.083984,0 A 8.0008,10.001 0 0 0 90.279297,137.49609 8.0008,10.001 0 0 0 93,130 l 0,-10 a 8.0008,10.001 0 0 0 -8,-10 l -16,0 a 8.0008,10.001 0 0 0 -8,10 l 0,10 a 8.0008,10.001 0 0 0 2.720703,7.50391 A 8.0008,10.001 0 0 0 61,145 l 0,50 a 8.0008,10.001 0 0 0 8,10 l 16,0 a 8.0008,10.001 0 0 0 6.917969,-5 L 96,200 l 0,90 a 20,10 0 0 0 10,8.64844 l 0,11.67773 A 20,10 0 0 0 91,320 l 0,100 a 20,40 0 0 0 10,34.59766 l 0,17.18359 c -4e-5,4.53911 3.67964,8.21879 8.21875,8.21875 l 33.5625,0 c 4.53911,4e-5 8.21879,-3.67964 8.21875,-8.21875 L 151,460 l 210,0 0,11.78125 c -4e-5,4.53911 3.67964,8.21879 8.21875,8.21875 l 33.5625,0 c 4.53911,4e-5 8.21879,-3.67964 8.21875,-8.21875 l 0,-17.19727 A 20,40 0 0 0 421,420 l 0,-100 a 20,10 0 0 0 -15,-9.66992 l 0,-11.6836 A 20,10 0 0 0 416,290 l 0,-90 4.08203,0 A 8.0008,10.001 0 0 0 427,205 l 16,0 a 8.0008,10.001 0 0 0 8,-10 l 0,-50 A 8.0008,10.001 0 0 0 448.2793,137.50391 8.0008,10.001 0 0 0 451,130 l 0,-10 a 8.0008,10.001 0 0 0 -8,-10 l -16,0 a 8.0008,10.001 0 0 0 -8,10 l 0,10 a 8.0008,10.001 0 0 0 2.7207,7.49609 A 8.0008,10.001 0 0 0 420.08398,140 L 416,140 416,120 A 30,80 0 0 0 389.59375,40.642578 135,10 0 0 0 256,32 Z m -137.15625,58 15.82227,0 34.4746,0 173.70313,0 34.49023,0 15.80664,0 c 4.77637,5.59e-4 8.88569,3.378489 9.81055,8.06445 2.01132,10.18974 3.03623,21.19633 3.04883,32.35938 l 0,0.0117 L 406,200 c -5.5e-4,5.52262 -4.47738,9.99945 -10,10 l -28,0 -224,0 -28,0 c -5.52262,-5.5e-4 -9.99945,-4.47738 -10,-10 l 0,-69.56445 0,-0.008 c 0.007,-11.15969 1.02625,-22.16523 3.03125,-32.35742 0.92257,-4.689004 5.0336,-8.070133 9.8125,-8.07031 z M 131,310 l 21.42773,0 c 2.65571,-6.2e-4 4.84866,2.07484 4.99415,4.72656 l 3.57031,65 C 161.14877,382.5909 158.86862,384.99951 156,385 l -25,0 c -2.76131,-2.8e-4 -4.99972,-2.23869 -5,-5 l 0,-65 c 2.8e-4,-2.76131 2.23869,-4.99972 5,-5 z M 359.57227,310 381,310 c 2.76131,2.8e-4 4.99972,2.23869 5,5 l 0,65 c -2.8e-4,2.76131 -2.23869,4.99972 -5,5 l -25,0 c -2.86862,-4.9e-4 -5.14877,-2.4091 -4.99219,-5.27344 l 3.57031,-65 c 0.14549,-2.65172 2.33844,-4.72718 4.99415,-4.72656 z M 173.5,322 l 165,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -165,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 163,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -163,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 161,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -161,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 1,18 159,0 a 2.50025,2.50025 0 0 1 2.5,2.5 l 0,3 a 2.50025,2.50025 0 0 1 -2.5,2.5 l -159,0 a 2.50025,2.50025 0 0 1 -2.5,-2.5 l 0,-3 a 2.50025,2.50025 0 0 1 2.5,-2.5 z m 13.34375,45 132.3125,0 13.34375,0 0,11 a 10,10 0 0 1 -10,10 l -139,0 a 10,10 0 0 1 -10,-10 l 0,-11 z"
-                            id="path14"
-                            style={{ fill: '#000000' }}
-                        />
-                    </g>
-                </svg>
-
-            </div>
-
-
-
+        <div className="h-[92vh] w-[14%] bg-secondary border-r-2 flex flex-col py-4 text-base">
+            {panelTabs.map((tab, index) => (
+                <div
+                    key={index}
+                    className={`${activeTab === tab.title
+                        ? "shadow-lg text-tertiaryColor bg-primary font-medium z-20"
+                        : "text-tertiaryColor"
+                        } flex items-end justify-between bg-secondary py-4 px-6 cursor-pointer whitespace-nowrap text-center`}
+                    onClick={() => navigate(tab.path)}
+                >
+                    <div>{tab.title}</div>
+                    <div>{activeTab === tab.title ? tab.svg : tab.outlinedsvg}</div>
+                </div>
+            ))}
         </div>
-    )
-}
+    );
+};
 
-export default SidePanel
+export default SidePanel;

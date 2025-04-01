@@ -3,26 +3,27 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import GetAppIcon from '@mui/icons-material/GetApp';
-import Calendar from './Calendar';
+import Calendar from '../components/Calendar';
 import * as XLSX from 'xlsx';
 import { useSelector } from 'react-redux';
 
 const initialVehicleData = [
-    { id: 1, date: '15-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1500, unloadingWeight: 1495, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 180000, owner: 'Gopal Logistic' },
-    { id: 2, date: '15-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1800, unloadingWeight: 1795, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 90000, owner: 'Sheetal Meel' },
-    { id: 3, date: '17-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2000, unloadingWeight: 1992, rate: 110, source: 'KKRI', destination: 'BKT', amount: 220000, owner: 'RK Sharma' },
-    { id: 4, date: '18-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 2200, unloadingWeight: 2195, rate: 110, source: 'Chandanber', destination: 'SBT', amount: 242000, owner: 'Anil Mishra' },
-    { id: 5, date: '19-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1700, unloadingWeight: 1690, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 204000, owner: 'Gopal Logistic' },
-    { id: 6, date: '20-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1600, unloadingWeight: 1595, rate: 120, source: 'Raipura', destination: 'Bareily', amount: 192000, owner: 'Sheetal Meel' },
-    { id: 7, date: '21-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2100, unloadingWeight: 2095, rate: 50, source: 'KKRI', destination: 'BKT', amount: 105000, owner: 'RK Sharma' },
-    { id: 8, date: '22-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 1900, unloadingWeight: 1892, rate: 50, source: 'Chandanber', destination: 'SBT', amount: 95000, owner: 'Anil Mishra' },
-    { id: 9, date: '23-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 2000, unloadingWeight: 1995, rate: 50, source: 'Sakhoti', destination: 'Jain', amount: 100000, owner: 'Gopal Logistic' },
-    { id: 10, date: '24-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 2200, unloadingWeight: 2190, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 110000, owner: 'Sheetal Meel' },
+    { id: 1, date: '15-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1500, unloadingWeight: 1495, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 180000, owner: 'Gopal Logistic', weightDifference: 5 },
+    { id: 2, date: '16-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1800, unloadingWeight: 1795, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 90000, owner: 'Sheetal Meel', weightDifference: 5 },
+    { id: 3, date: '17-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2000, unloadingWeight: 1992, rate: 110, source: 'KKRI', destination: 'BKT', amount: 220000, owner: 'RK Sharma', weightDifference: 8 },
+    { id: 4, date: '18-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 2200, unloadingWeight: 2195, rate: 110, source: 'Chandanber', destination: 'SBT', amount: 242000, owner: 'Anil Mishra', weightDifference: 5 },
+    { id: 5, date: '19-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 1700, unloadingWeight: 1690, rate: 120, source: 'Sakhoti', destination: 'Jain', amount: 204000, owner: 'Gopal Logistic', weightDifference: 10 },
+    { id: 6, date: '20-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 1600, unloadingWeight: 1595, rate: 120, source: 'Raipura', destination: 'Bareily', amount: 192000, owner: 'Sheetal Meel', weightDifference: 5 },
+    { id: 7, date: '21-11-2024', vehicleNumber: 'MH12AB1234', loadingWeight: 2100, unloadingWeight: 2095, rate: 50, source: 'KKRI', destination: 'BKT', amount: 105000, owner: 'RK Sharma', weightDifference: 5 },
+    { id: 8, date: '22-11-2024', vehicleNumber: 'DL12EF9876', loadingWeight: 1900, unloadingWeight: 1892, rate: 50, source: 'Chandanber', destination: 'SBT', amount: 95000, owner: 'Anil Mishra', weightDifference: 8 },
+    { id: 9, date: '23-11-2024', vehicleNumber: 'UP01RS4321', loadingWeight: 2000, unloadingWeight: 1995, rate: 50, source: 'Sakhoti', destination: 'Jain', amount: 100000, owner: 'Gopal Logistic', weightDifference: 5 },
+    { id: 10, date: '24-11-2024', vehicleNumber: 'UP32GH5678', loadingWeight: 2200, unloadingWeight: 2190, rate: 50, source: 'Raipura', destination: 'Bareily', amount: 110000, owner: 'Sheetal Meel', weightDifference: 10 },
 ];
+
 
 const initialExpenseData = [
     { id: 1, date: "15-11-2024", vehicleNumber: "MH12AB1234", owner: "Gopal Logistic", hsd: 50, hsdAmount: 5000, cash: 1000, totalAmount: 6050, petrolPump: "Puri P.Pump" },
-    { id: 2, date: "15-11-2024", vehicleNumber: "UP32GH5678", owner: "Sheetal Meel", hsd: 40, hsdAmount: 4000, cash: 1500, totalAmount: 5500, petrolPump: "S.B P.Pump" },
+    { id: 2, date: "16-11-2024", vehicleNumber: "UP01RS4321", owner: "Sheetal Meel", hsd: 40, hsdAmount: 4000, cash: 1500, totalAmount: 5500, petrolPump: "S.B P.Pump" },
     { id: 3, date: "17-11-2024", vehicleNumber: "UP32GH5678", owner: "RK Sharma", hsd: 60, hsdAmount: 6000, cash: 2000, totalAmount: 8000, petrolPump: "Sambhal P.Pump" },
     { id: 4, date: "18-11-2024", vehicleNumber: "DL04EF1234", owner: "Anil Mishra", hsd: 55, hsdAmount: 5500, cash: 1800, totalAmount: 7300, petrolPump: "Delhi P.Pump" },
 ];
@@ -36,7 +37,7 @@ const initialMiscellaneousData = [
 
 const prevDues = 650000;
 
-const OverallReport = () => {
+const WeightSheet = () => {
 
     const { vehicleData } = useSelector((state) => state.vehicleData);
     const [finalExpenses, setFinalExpenses] = useState(0);
@@ -120,187 +121,170 @@ const OverallReport = () => {
     const handleExportToExcel = () => {
         const workbook = XLSX.utils.book_new();
 
-        // Define headers with exact order
-        const headers = [
-            "S No.",
-            "Date",
-            "Vehicle Number",
-            "Owners",
-            "Source",
-            "Destination",
-            "Loading Weight",
-            "Unloading Weight",
-            "Rate",
-            "Income Amount",
-            "Petrol Pump",
-            "HSD (L)",
-            "HSD Amount",
-            "Cash",
-            "Expense Amount",
-            "Miscellaneous Type",
-            "Miscellaneous Amount"
+        // Income sheet headers and data
+        const incomeSheetHeaders = {
+            date: "Date",
+            vehicleNumber: "Vehicle Number",
+            unloadingWeight: "Weight (kg)",
+            rate: "Rate (per kg)",
+            source: "Source",
+            destination: "Destination",
+            amount: "Income",
+        };
+        const incomeSheetData = [
+            ...incomeFilteredData.map(({ id, loadingWeight, owner, ...rest }) => rest), // Exclude 'id' field
+            {}, {}, // Empty rows
+            { source: "Total Rounds: ", amount: totalRounds },
+            {},
+            { source: "Total Income: ", amount: totalIncome },
+            {},
+            { source: "Total Expense: ", amount: finalExpenses },
+            {},
+            { source: "Total Profit: ", amount: totalIncome - finalExpenses },
+            {},
+            { source: "Prev Dues: ", amount: prevDues },
+            {},
+            { source: "Balance: ", amount: prevDues + (totalIncome - finalExpenses) },
         ];
 
-        // Function to create an empty row with all columns
-        const createEmptyRow = () => {
-            return headers.reduce((acc, header) => ({ ...acc, [header]: "" }), {});
+        // Correctly extract headers as an array of keys
+        const incomeHeaders = Object.keys(incomeSheetHeaders);
+
+        // Create a worksheet and manually insert the headers
+        const incomeWorksheet = XLSX.utils.json_to_sheet(incomeSheetData, {
+            header: incomeHeaders,
+            skipHeader: true,
+            origin: "A5", // Start from the 5th row for the main table
+        });
+
+        // Insert the selected owner at the top row (centered)
+        const ownerCellRef = XLSX.utils.encode_cell({ r: 0, c: Math.floor(incomeHeaders.length / 2) });
+        incomeWorksheet[ownerCellRef] = {
+            v: selectedOwner || "All", // Display the selected owner or "All" if not selected
+            t: "s",
         };
 
-        // Create a map to hold combined data
-        const combinedDataMap = new Map();
+        // Apply styling to the owner cell (bold, yellow background, and centered)
+        incomeWorksheet[ownerCellRef].s = {
+            alignment: {
+                horizontal: "center", // Center horizontally
+                vertical: "center", // Center vertically
+            },
+            font: {
+                bold: true, // Bold font
+                sz: 16, // Slightly larger font size
+            },
+            fill: {
+                fgColor: { rgb: "FFFF00" }, // Yellow background color
+            },
+        };
 
-        // Process income data
-        incomeFilteredData.forEach(entry => {
-            const key = `${entry.date}_${entry.vehicleNumber}`;
-            const newRow = {
-                ...createEmptyRow(),
-                "Date": entry.date,
-                "Vehicle Number": entry.vehicleNumber,
-                "Owners": entry.owner,
-                "Source": entry.source,
-                "Destination": entry.destination,
-                "Loading Weight": entry.loadingWeight,
-                "Unloading Weight": entry.unloadingWeight,
-                "Rate": entry.rate,
-                "Income Amount": entry.amount
+        // Insert custom headers in the third row (two-row gap)
+        incomeHeaders.forEach((header, index) => {
+            const cellRef = XLSX.utils.encode_cell({ r: 3, c: index }); // Start from row 3
+            incomeWorksheet[cellRef] = {
+                v: incomeSheetHeaders[header],
+                t: "s",
             };
-            combinedDataMap.set(key, newRow);
         });
 
-        // Process expense data
-        filteredExpenseData.forEach(entry => {
-            const key = `${entry.date}_${entry.vehicleNumber}`;
-            let row = combinedDataMap.get(key) || {
-                ...createEmptyRow(),
-                "Date": entry.date,
-                "Vehicle Number": entry.vehicleNumber,
-                "Owners": entry.owner
-            };
-
-            row = {
-                ...row,
-                "Petrol Pump": entry.petrolPump || row["Petrol Pump"],
-                "HSD (L)": entry.hsd || row["HSD (L)"],
-                "HSD Amount": entry.hsdAmount || row["HSD Amount"],
-                "Cash": entry.cash || row["Cash"],
-                "Expense Amount": entry.totalAmount || row["Expense Amount"]
-            };
-
-            combinedDataMap.set(key, row);
-        });
-
-        // Process miscellaneous data
-        filteredMiscellaneousData.forEach(entry => {
-            const key = `${entry.date}_${entry.vehicleNumber}`;
-            let row = combinedDataMap.get(key) || {
-                ...createEmptyRow(),
-                "Date": entry.date,
-                "Vehicle Number": entry.vehicleNumber,
-                "Owners": entry.owner
-            };
-
-            row = {
-                ...row,
-                "Miscellaneous Type": entry.type || row["Miscellaneous Type"],
-                "Miscellaneous Amount": entry.amount || row["Miscellaneous Amount"]
-            };
-
-            combinedDataMap.set(key, row);
-        });
-
-        // Convert map to array and sort by date
-        const allData = Array.from(combinedDataMap.values())
-            .sort((a, b) => {
-                const dateA = new Date(a["Date"].split('-').reverse().join('-'));
-                const dateB = new Date(b["Date"].split('-').reverse().join('-'));
-                return dateA - dateB;
-            })
-            .map((row, index) => ({
-                ...row,
-                "S No.": index + 1
-            }));
-
-        // Add summary rows
-        const allDataWithSummary = [
-            ...allData,
-            createEmptyRow(),
-            createEmptyRow(),
-            {
-                ...createEmptyRow(),
-                "Source": "Total Rounds:",
-                "Income Amount": totalRounds
-            },
-            createEmptyRow(),
-            {
-                ...createEmptyRow(),
-                "Source": "Total Income:",
-                "Income Amount": totalIncome
-            },
-            createEmptyRow(),
-            {
-                ...createEmptyRow(),
-                "Source": "Total Expense:",
-                "Income Amount": finalExpenses
-            },
-            createEmptyRow(),
-            {
-                ...createEmptyRow(),
-                "Source": "Total Profit:",
-                "Income Amount": totalIncome - finalExpenses
-            },
-            createEmptyRow(),
-            {
-                ...createEmptyRow(),
-                "Source": "Prev Dues:",
-                "Income Amount": prevDues
-            },
-            createEmptyRow(),
-            {
-                ...createEmptyRow(),
-                "Source": "Balance:",
-                "Income Amount": prevDues + (totalIncome - finalExpenses)
+        // Style the custom headers (bold)
+        incomeHeaders.forEach((header, index) => {
+            const cellRef = XLSX.utils.encode_cell({ r: 3, c: index }); // Start from row 3
+            if (incomeWorksheet[cellRef]) {
+                incomeWorksheet[cellRef].s = {
+                    font: {
+                        bold: true, // Make the font bold
+                        sz: 14, // Font size
+                    },
+                    alignment: {
+                        horizontal: "center", // Center align the headers
+                    },
+                };
             }
+        });
+
+        // Expense sheet headers and data
+        const expenseSheetHeaders = {
+            date: "Date",
+            vehicleNumber: "Vehicle Number",
+            // petrolPump: "Petrol Pump",
+            hsd: "HSD (liters)",
+            hsdAmount: "HSD Amount",
+            cash: "Cash",
+            others: "Others",
+            // salary: "Salary",
+            // fitness: "Fitness",
+            // tax: "Tax",
+            // tyre: "Tyre",
+            // installment: "Installments",
+            // permit: "Permit",
+            totalAmount: "Amount",
+            // finalExpense:"Total Amount"
+        };
+        const transformedMiscellaneousData = filteredMiscellaneousData.map(({ id, petrolPump, owner, type, amount, ...rest }) => ({
+            ...rest,
+            others: type,
+            // salary: type === 'Driver Salary',
+            // insura: type === 'Vehicle Insurance',
+            // salary: type === 'Driver Salary',
+            // salary: type === 'Driver Salary',
+            // salary: type === 'Driver Salary',
+            totalAmount: amount,
+        }));
+        const expenseSheetData = [
+            ...filteredExpenseData.map(({ id, petrolPump, owner, ...rest }) => rest), // Exclude 'id' field
+            ...transformedMiscellaneousData, // Transformed Miscellaneous Data
+            {}, {}, // Empty rows
+            { cash: "Total Expenses: ", totalAmount: finalExpenses },
         ];
 
-        // Create worksheet
-        const worksheet = XLSX.utils.aoa_to_sheet([headers]);
+        // Correctly extract headers as an array of keys
+        const expenseHeaders = Object.keys(expenseSheetHeaders);
 
-        // Add data rows
-        XLSX.utils.sheet_add_json(worksheet, allDataWithSummary, {
-            origin: 'A2',
-            skipHeader: true
+        // Manually insert headers in the first row, and use skipHeader: true
+        const expenseWorksheet = XLSX.utils.json_to_sheet(expenseSheetData, {
+            header: expenseHeaders, // Use the array of headers
+            skipHeader: true, // Skip default header generation
+            origin: "A2", // Start from the second row
         });
 
-        // Style configuration
-        const headerStyle = {
-            font: { bold: true },
-            alignment: { horizontal: 'center', vertical: 'center' },
-            fill: { fgColor: { rgb: "E6E6E6" } },
-            border: {
-                top: { style: 'thin' },
-                bottom: { style: 'thin' },
-                left: { style: 'thin' },
-                right: { style: 'thin' }
-            }
-        };
+        // Insert custom headers in the first row
+        expenseHeaders.forEach((header, index) => {
+            expenseWorksheet[XLSX.utils.encode_cell({ r: 0, c: index })] = {
+                v: expenseSheetHeaders[header],
+                t: 's',
+            };
+        });
 
-        // Set column widths and apply styles
-        const range = XLSX.utils.decode_range(worksheet['!ref']);
-        worksheet['!cols'] = headers.map(() => ({ wch: 15 }));
-
-        // Apply header styles
-        headers.forEach((_, index) => {
+        // Style the custom headers (bold)
+        expenseHeaders.forEach((header, index) => {
             const cellRef = XLSX.utils.encode_cell({ r: 0, c: index });
-            worksheet[cellRef].s = headerStyle;
+            if (expenseWorksheet[cellRef]) {
+                expenseWorksheet[cellRef].s = {
+                    font: {
+                        bold: true, // Make the font bold
+                        sz: 14, // Font size
+                    },
+                };
+            }
         });
 
-        // Add the worksheet to workbook
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Vehicle Report");
+        // Set column widths for both sheets
+        const setColumnWidths = (worksheet) => {
+            const columnsCount = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1; // Total columns
+            worksheet['!cols'] = Array(columnsCount).fill({ wch: 18 }); // Set each column to width 18
+        };
+        setColumnWidths(incomeWorksheet);
+        setColumnWidths(expenseWorksheet);
 
-        // Save the file
-        XLSX.writeFile(workbook, `VehicleReport_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`);
+        // Append worksheets to the workbook
+        XLSX.utils.book_append_sheet(workbook, incomeWorksheet, 'Monthly Income');
+        XLSX.utils.book_append_sheet(workbook, expenseWorksheet, 'Monthly Expenses');
+
+        // Trigger download
+        XLSX.writeFile(workbook, 'VehicleData.xlsx');
     };
-
 
     const handleSourceData = (event) => {
         setSelectedSource(event.target.value);
@@ -329,6 +313,9 @@ const OverallReport = () => {
         },
         {
             field: 'unloadingWeight', headerName: 'Unloading Weight', flex: 1
+        },
+        {
+            field: 'weightDifference', headerName: 'Difference Weight', flex: 1
         },
         { field: 'rate', headerName: 'Rate', flex: 0.8 },
         {
@@ -441,9 +428,7 @@ const OverallReport = () => {
 
 
     return (
-
-        <div className=" w-full bg-secondary text-primaryColor ">
-
+        <div className="px-[6vmax] w-[86%] pt-4 bg-secondary text-primaryColor h-[92vh] overflow-hidden box-border">
             <div className='flex items-center justify-between py-4'>
                 <div className='w-[60%] flex items-center justify-between gap-4'>
 
@@ -463,7 +448,7 @@ const OverallReport = () => {
                             ))}
                         </Select>
                     </FormControl>
-                    <FormControl sx={{ width: "50%" }}>
+                    {/* <FormControl sx={{ width: "50%" }}>
                         <InputLabel id="filter-vehicle-label">Owners</InputLabel>
                         <Select
                             sx={{ height: "3vmax", backgroundColor: "white", fontSize: ".9vmax" }}
@@ -478,7 +463,7 @@ const OverallReport = () => {
                                 </MenuItem>
                             ))}
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
 
                     <Calendar dateState={dateState} setDateState={setDateState} />
                 </div>
@@ -497,7 +482,7 @@ const OverallReport = () => {
 
             {/* source and destination filters */}
             {
-                ((selectedVehicle || selectedOwner) && selectedDate) && (<div className='flex items-center justify-between gap-4 pb-4 w-[60%]'>
+                (<div className='flex items-center justify-between gap-4 pb-4 w-[60%]'>
 
                     <FormControl fullWidth>
                         <InputLabel id="filter-source-label">Source</InputLabel>
@@ -538,7 +523,7 @@ const OverallReport = () => {
 
                 {/* Income */}
                 <div className='w-full'>
-                    <h3 className="text-lg font-medium pb-2 w-fit mx-auto">Total Income</h3>
+                    <h3 className="text-lg font-medium pb-2 w-fit mx-auto">Weight Sheet</h3>
 
                     {
                         incomeFilteredData && (
@@ -578,7 +563,7 @@ const OverallReport = () => {
 
                 {/* Expense */}
 
-                <div className="w-full ">
+                {/* <div className="w-full ">
                     <h3 className="text-lg font-medium pb-2 w-fit mx-auto mt-[4vmax]">Main Expenses</h3>
                     <div className="flex items-center justify-between bg-white shadow-lg p-4 border rounded-md">
                         <h3 className="text-base font-normal">
@@ -605,7 +590,7 @@ const OverallReport = () => {
 
 
                     </div>
-                </div>
+                </div> */}
             </div>
 
 
@@ -613,4 +598,4 @@ const OverallReport = () => {
     )
 }
 
-export default OverallReport;
+export default WeightSheet;

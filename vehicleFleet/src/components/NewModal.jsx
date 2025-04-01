@@ -12,75 +12,47 @@ import {
     InputLabel,
     FormControl
 } from '@mui/material';
-import NewModal from './NewModal';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
-const documentStructure = {
-    amountPaid: "",
-    document: "",
-    expiryDate: "",
-    id: "",
-    lastIssueDate: "",
-    vehicle: ""
-}
-
-const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions, ownerOptions, petrolPumpOptions, isForExpense, miscellaneousOptions }) => {
-
-    const { vehicleData } = useSelector((state) => state.vehicleData);
-
+const NewModal = ({ isOpen, modalTitle, onClose, structure, onSave, optionList, isForExpense, miscellaneousOptions }) => {
     const [editedVehicle, setEditedVehicle] = useState(structure);
     const [miscellaneousType, setMiscellaneousType] = useState("")
-
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const handleAddDocument = () => {
-        console.log("Document ;added!!")
-    }
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         console.log(name, value)
-        setMiscellaneousType(value);
+        setMiscellaneousType(name);
         setEditedVehicle((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSave = () => {
-        console.log("Save eXpense!!")
         onSave(editedVehicle);
         onClose();
     };
 
     const handleSaveExpense = () => {
-        console.log("Hndle save expense")
         if (editedVehicle.miscellaneous === "Others") {
             const updatedVehicle = {
                 ...editedVehicle,
                 miscellaneous: editedVehicle.others || "", // Ensure there's a fallback value
             };
-
-            console.log(updatedVehicle);
+            console.log(updatedVehicle)
             onSave(updatedVehicle);
             onClose();
         }
-
-        console.log("Saved Expense: ", editedVehicle)
         onSave(editedVehicle);
         onClose();
     }
 
-    useEffect(() => {
-        setIsAddModalOpen(true);
-    }, [miscellaneousType])
-
-    return (<>
-
+    return (
         <Dialog open={isOpen} onClose={onClose}>
             <DialogTitle>{modalTitle}</DialogTitle>
             <DialogContent>
                 {Object.entries(editedVehicle)?.map(([key, value]) => {
-
-                    if (key === 'id' || key === "expenseId" || key === "totalAmount" || key === "amount" || key === "type") return
-                    if (key === 'vehicleNumber' || key === "miscellaneous" || key === 'petrolPump' || key === "owner") {
+                    if (key === "income" || key === "id" || key === "_id") return;
+                    if (key === 'vehicle' || key === "miscellaneous" || key === 'ownership' || key === 'document') {
                         return (
                             <FormControl fullWidth margin="normal" key={key}>
                                 <InputLabel id="structure-select-label"> {key.charAt(0).toUpperCase() + key.slice(1)}</InputLabel>
@@ -88,9 +60,7 @@ const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions,
                                     sx={{
                                         height: "3vmax",
                                         backgroundColor: "white",
-                                        fontSize: "1vmax", // Match font size of input
-
-                                        // Style the select input field
+                                        fontSize: "1vmax",
                                         '& .MuiOutlinedInput-root': {
                                             '& .MuiOutlinedInput-notchedOutline': {
                                                 top: '-5px', // Align with TextField
@@ -133,28 +103,28 @@ const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions,
                                     onChange={handleInputChange}
                                     label="Vehicle Number"
                                 >
-                                    {/* <MenuItem value=""></MenuItem> */}
-
-                                    {
-                                        key === "vehicleNumber" ? vehicleOptions.map((option) => (
-                                            option !== "All" &&
-                                            <MenuItem key={option} value={option}>
-                                                {option}
-                                            </MenuItem>
-                                        )) : key === "owner" ? ownerOptions.map((option) => (
-                                            option !== "All" &&
-                                            <MenuItem key={option} value={option}>
-                                                {option}
-                                            </MenuItem>
-                                        )) : key === "petrolPump" ? petrolPumpOptions.map((option) => (
-                                            <MenuItem key={option} value={option}>
-                                                {option}
-                                            </MenuItem>
-                                        )) : key === "miscellaneous" ? miscellaneousOptions.map((option) => (
-                                            <MenuItem key={option} value={option}>
-                                                {option}
-                                            </MenuItem>
-                                        )) : ""}
+                                    {(isForExpense && key === "miscellaneous") ? miscellaneousOptions.map((option) => (
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    )) : key === 'vehicle' ? optionList.Vehicles?.map((option) => (
+                                        option !== "All" &&
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    )) : key === 'document' ? optionList.Documents?.map((option) => (
+                                        option !== "All" &&
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    )) : (optionList?.Owners?.map((option) => (
+                                        option !== "All" &&
+                                        <MenuItem key={option} value={option}>
+                                            {option}
+                                        </MenuItem>
+                                    ))
+                                    )
+                                    }
                                 </Select>
 
                             </FormControl>
@@ -163,69 +133,76 @@ const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions,
                     if (key === "miscellaneousAmount" || key === "others") return;
                     // if (miscellaneousType !== "Others") return;
                     return (
-                        <TextField
-                            key={key}
-                            sx={{
+                        <LocalizationProvider dateAdapter={AdapterDayjs} key={key}>
+                            {["date", "lastIssueDate", "expiryDate"].includes(key) ? (
+                                <FormControl fullWidth margin="normal">
+                                    <DatePicker
+                                        label={key.charAt(0).toUpperCase() + key.slice(1)}
+                                        value={
+                                            value
+                                                ? dayjs(value, "DD-MM-YYYY", true).isValid()
+                                                    ? dayjs(value, "DD-MM-YYYY")
+                                                    : dayjs(value, "MM-DD-YYYY", true).isValid()
+                                                        ? dayjs(value, "MM-DD-YYYY")
+                                                        : dayjs(value)
+                                                : null // Handle null or empty values
+                                        }
+                                        onChange={(newValue) => {
+                                            if (newValue) {
+                                                const formattedDate = newValue.format("DD-MM-YYYY"); // Format to DD-MM-YYYY
+                                                handleInputChange({
+                                                    target: {
+                                                        name: key,
+                                                        value: formattedDate, // Send formatted date to the handler
+                                                    },
+                                                });
+                                            } else {
+                                                handleInputChange({
+                                                    target: {
+                                                        name: key,
+                                                        value: "",
+                                                    },
+                                                });
+                                            }
+                                        }}
+                                        inputFormat="DD/MM/YYYY" // Ensure displayed value is in DD/MM/YYYY format
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                sx={{
+                                                    "& .MuiInputBase-root": {
+                                                        height: "3vmax",
+                                                    },
 
-                                '& .MuiOutlinedInput-root': {
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        top: '-5px',
-                                        height: "3vmax",
+                                                    "& .MuiOutlinedInput-root": {
+                                                        "& .MuiOutlinedInput-notchedOutline": { top: "-5px", height: "3vmax" },
+                                                        "& .MuiInputBase-root": {
+                                                            height: "3vmax"
+                                                        },
+                                                        "& fieldset": { height: "3vmax" },
+                                                        "& .MuiInputBase-input": { height: "3vmax", margin: "0" },
+                                                    },
 
-                                    },
-                                    '& fieldset': {
-                                        height: '3vmax',
-                                        // top: '-1vmax',
-                                        // border: "1px solid gray"
-                                    },
-                                    '& .MuiInputBase-input': {
-
-                                        // paddingTop: '1.5vmax',
-                                        // top: '-.9vmax',
-                                        height: "3vmax",
-                                        margin: "0",
-
-                                        // fontSize: '1vmax',   // Change font size of the input content
-                                        // color: 'blue',       // Set text color
-                                        // paddingLeft: '10px', // Add padding to the left of the input content
-                                    },
-                                    '& .MuiOutlinedInput-input': {
-                                        // paddingTop: '1.5vmax',
-                                        fontSize: '1vmax',  // Change input content font size
-
-                                    },
-                                },
-                                '& .MuiInputLabel-root': {
-
-                                    // bottom: "2vmax",
-                                    fontSize: '1vmax',
-
-                                    // Bottom: "7.5vmax",
-
-                                },
-                                '& .MuiInputLabel-root.css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root': {
-                                    top: '-.25vmax !important',
-                                    fontSize: "1vmax !important", // Style for the first specific class
-                                },
-                                // '& .MuiInputLabel-root.Mui-focused': {
-                                //     color: 'red',                 // Color when the input is focused
-                                // },
-                                // '& .MuiInputLabel-root.MuiFormLabel-colorPrimary': {
-                                //     color: 'purple',              // Specific styling based on the class you mentioned
-                                // },
-                            }}
-
-                            margin="normal"
-                            name={key}
-                            label={key.charAt(0).toUpperCase() + key.slice(1)}
-                            type={(key === 'date' || key === 'lastIssueDate' || key === 'expiryDate') ? 'date' : 'text'}
-                            fullWidth
-                            value={value}
-                            onChange={handleInputChange}
-                            InputLabelProps={(key === 'date' || key === 'lastIssueDate' || key === 'expiryDate') ? { shrink: true } : undefined}
-                        />
+                                                    "& .MuiInputLabel-root": { fontSize: "1vmax" },
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </FormControl>
+                            ) : (
+                                <FormControl fullWidth margin="normal">
+                                    <TextField
+                                        name={key}
+                                        label={key.charAt(0).toUpperCase() + key.slice(1)}
+                                        value={value || ""}
+                                        onChange={handleInputChange}
+                                    />
+                                </FormControl>
+                            )}
+                        </LocalizationProvider>
                     );
                 })}
+
                 {isForExpense && editedVehicle.miscellaneous !== "" && (
                     <>
                         {editedVehicle.miscellaneous === "Others" && (
@@ -313,21 +290,7 @@ const Modal = ({ isOpen, modalTitle, onClose, structure, onSave, vehicleOptions,
                 <Button onClick={isForExpense ? handleSaveExpense : handleSave}>Save</Button>
             </DialogActions>
         </Dialog >
-        {["Vehicle Insurance", "Vehicle Permit", "Vehicle Fitness", "Vehicle Pollution"].includes(miscellaneousType) ?
-            <NewModal
-                modalTitle={`${miscellaneousType} Details`}
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(!isAddModalOpen)}
-                structure={documentStructure}
-                optionList={vehicleData}
-                onSave={handleAddDocument}
-            />
-            : ""
-        }
-
-    </>
     );
 };
 
-export default Modal;
-// drupple
+export default NewModal;

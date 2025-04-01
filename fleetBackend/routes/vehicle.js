@@ -9,14 +9,13 @@ import {
   //   getVehicleById,
   //   updateVehicleById,
   //   deleteVehicleById,
-} from "../controllers/vehicle.controller.js"; // Ensure the controller functions are imported
+} from "../controllers/vehicle.controller.js";
 
 const router = express.Router();
 
 // CSR - Client Side Rendering
 
 router.route("/").get(getAllVehicles).post(addVehicle);
-
 router.route("/:id").put(editVehicle).delete(deleteVehicle);
 
 export default router;

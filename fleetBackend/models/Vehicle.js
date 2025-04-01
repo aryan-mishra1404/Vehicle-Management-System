@@ -7,20 +7,33 @@ const vehicleSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    vehicleType: {
+    chassisNumber: {
+      type: String,
+      // required: true,
+      unique: true,
+    },
+    capacity: {
       type: String,
       required: true,
     },
+    // userId: {
+    //   type: mongoose.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
+
     ownership: {
       type: String,
+      // enum: ["", ""],
       required: true,
     },
-    vendors: {
-      type: String,
-      required: true,
+    date: {
+      type: Date,
+      default: Date.now,
     },
     status: {
       type: Boolean, //  engazed or not
+      default: true,
     },
   },
   { timestamps: true }
