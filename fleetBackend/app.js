@@ -7,13 +7,27 @@ import userRoutes from "./routes/user.js";
 
 const app = express();
 
-const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://vehicle-management-system-dusky.vercel.app/",
-  ], // CORS origin
-  optionsSuccessStatus: 204, // Single status code
-  preflightContinue: false,
+// const corsOptions = {
+//   origin: [
+//     "http://localhost:5173",
+//     "https://vehicle-management-system-dusky.vercel.app/",
+//   ], // CORS origin
+//   optionsSuccessStatus: 204, // Single status code
+//   preflightContinue: false,
+// };
+
+var whitelist = [
+  "https://vehicle-management-system-dusky.vercel.app",
+  "http://example2.com",
+];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
 };
 
 app.use(cors(corsOptions));
