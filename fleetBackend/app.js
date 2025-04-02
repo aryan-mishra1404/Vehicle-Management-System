@@ -8,7 +8,10 @@ import userRoutes from "./routes/user.js";
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:5173", // CORS origin
+  origin: [
+    "http://localhost:5173",
+    "https://vehicle-management-system-dusky.vercel.app/",
+  ], // CORS origin
   optionsSuccessStatus: 204, // Single status code
   preflightContinue: false,
 };
