@@ -17,7 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import NewModal from '../components/NewModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateVehicleData } from '../Redux/VehicleDataSlice';
-import { addVehicle, getVehicles } from '../api/VehicleApi';
+import { addVehicle, getVehicles } from '../api/vehicleApi';
 // const initialVehicleData = [
 // {
 //     id: 1, // Add unique ID here
