@@ -18,16 +18,19 @@ const app = express();
 
 var whitelist = [
   "https://vehicle-management-system-dusky.vercel.app",
-  "http://example2.com",
+  "http://localhost:5173",
 ];
-var corsOptions = {
+const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
+    if (!origin || whitelist.includes(origin)) {
+      // Allow requests without an origin (like Postman) or if it's in the whitelist
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  credentials: true, // Allow cookies and authentication headers
+  optionsSuccessStatus: 204, // Ensure browsers don't block preflight responses
 };
 
 app.use(cors(corsOptions));
