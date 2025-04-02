@@ -23,7 +23,7 @@ app.use("/api/v1/vehicle", vehicleRoutes);
 app.use("/api/v1/associate", associateRoutes);
 app.use("/api/v1/document", documentRoutes);
 
-app.get("/api/v1/healthcheck", (req, res) => {
+app.get("/healthcheck", (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Service is Running!",
